@@ -5,6 +5,7 @@ __lua__
 #include px9_dec.p8
 #include intro.p8
 #include spring.p8
+#include rasterizer.p8
 
 t=0
 delays = {}
@@ -72,7 +73,14 @@ function _update()
 			pal()
 			fillp()
 		end
+		if(mp==52)then
+			t=0
+		end
 
+		
+		if(mp==96)then
+			t=0
+		end
 	end
 	p_elapsed=elapsed
 	if(mp==23 and t==64)then
@@ -87,13 +95,39 @@ function _draw()
 	cls(0)
 	if(mp<20)then
 		intro()
-	else
+	elseif(mp<52)then
 		spring()
+	elseif(mp<64)then
+		bridge1()
+	elseif(mp<96)then
+		summer()
+	elseif(mp<112)then
+		bridge2()
+	elseif(mp<144)then
+		autumn()
+	elseif(mp<160)then
+		bridge3()
+	elseif(mp<192)then
+		winter()
+	else
 	end
 	--print(@0xc000,0,50,7)
 	--spr(0,0,0,16,16)
-	-- print(mp,0,70,1)
-	-- print(t,0,80,1)
+	print(mp,0,70,1)
+	print(t,0,80,1)
+end
+--placeholders
+function summer()
+	print("summer",64,64,10)
+end
+function autumn()
+	print("autumn",64,64,10)
+end
+function bridge3()
+	print("bridge3",64,64,10)
+end
+function winter()
+	print("winter",64,64,10)
 end
 __gfx__
 __sfx__
