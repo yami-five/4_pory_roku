@@ -209,8 +209,8 @@ function draw_model(p,qt,vertices,v,faces,f,tc,uv)
         -- printh(nv[1].." "..nv[2].." "..nv[3].." "..vec_len, "loggg.txt")
         -- printh(l_cos.." "..x.." "..y.." "..t, "loggg.txt")
         -- printh(l_len.." "..nv_len, "loggg.txt")
-        printh(l_int, "loggg.txt")
-        printh(".....................", "loggg.txt")
+        -- printh(l_int, "loggg.txt")
+        -- printh(".....................", "loggg.txt")
         -- printh(l_int.." "..t, "loggg.txt")
         tric(
             vt[a*3+1],

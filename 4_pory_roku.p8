@@ -5,7 +5,9 @@ __lua__
 #include px9_dec.p8
 #include intro.p8
 #include spring.p8
+#include summer.p8
 #include rasterizer.p8
+#include fractals.p8
 
 t=0
 delays = {}
@@ -76,8 +78,28 @@ function _update()
 		if(mp==52)then
 			t=0
 		end
+		if(mp==64)then
+			t=0
+			pal(2,132,1)
+			pal(7,140,1)
+			pal(8,128,1)
+			pal(11,138,1)
+			pal(13,14,1)
+			pal(14,11,1)
+			pal(15,9,1)
+			pal(9,135,1)
+			pal(3,139,1)
+			pal(6,134,1)
+		end
+		if(mp==76)then
+			t=0
+		end
+		if(mp==86)then
+			t=0
+			cx=-1
+			cy=-1
+		end
 
-		
 		if(mp==96)then
 			t=0
 		end
@@ -117,9 +139,6 @@ function _draw()
 	print(t,0,80,1)
 end
 --placeholders
-function summer()
-	print("summer",64,64,10)
-end
 function autumn()
 	print("autumn",64,64,10)
 end

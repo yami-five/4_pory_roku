@@ -5,6 +5,7 @@ max_iter=16
 s=1.05
 cx=-1.9
 cy=0
+stage=1
 function mandelbrot(c)
     local z={0,0}
     local n=0
@@ -16,19 +17,8 @@ function mandelbrot(c)
     return n
 end
 
-function _update()
-    s*=0.9
-end
-
-function hex(value)
-	result=tostr(value,true)
-	result=sub(result,6,6)
-    -- printh(result,"loggg.txt")
-	return result
-end
-
-function _draw()
-    cls()
+function fractal1()
+    s*=.8
     local rs = -2
     local re = 1
     local is = -1
@@ -54,6 +44,56 @@ function _draw()
             -- print(c1.." "..c2.." "..n.." "..color.." "..i.." "..j)
         end
     end
+end
+
+-- s=1.05
+-- cx=-1
+-- cy=-1
+-- stage=1
+function julia(z1,z2)
+    local z={z1,z2}
+    local n=0
+    while((z[1]*z[1]+z[2]*z[2])<=4 and n<max_iter) do
+        tempZx=z[1]*z[1]-z[2]*z[2]+cx
+        z[2]=z[1]*z[2]*2+cy
+        z[1]=tempZx
+        n+=1
+    end
+    return n
+end
+
+function fractal2()
+    if(flr(stage)==1)then
+        cy+=0.1
+    elseif(flr(stage)==2)then
+        cy-=0.1
+    end
+    stage+=0.1
+    local rs = -1.75
+    local re = 1.75
+    local is = -1
+    local ie = 1
+    -- for i=-1,1,0.5 do
+    --     for j=-1,1,0.5 do
+    for i=1,128,1 do
+        for j=1,64,1 do
+            local z1=rs + (i*0.0078) * (re - rs)
+            local z2=is + (j*0.0078) * (ie - is)
+            n=julia(z1,z2)
+            local color = 16-n
+            pset(i,j,color)
+            pset(i,128-j,color)
+            -- print(j/128)
+            -- print(c1.." "..c2.." "..n.." "..color.." "..i.." "..j)
+        end
+    end
+end
+
+function hex(value)
+	result=tostr(value,true)
+	result=sub(result,6,6)
+    -- printh(result,"loggg.txt")
+	return result
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
