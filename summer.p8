@@ -20,7 +20,7 @@ function summer()
 end
 
 function flowers()
-    if(flr(t*0.01)%4>0)then
+    if(mp>=67)then
         pset(66,107,2)
         pset(121,101,5)
         pset(127,99,2)
@@ -29,23 +29,23 @@ function flowers()
         pset(81,111,4)
         pset(58,115,1)
         pset(50,104,2)
-        pset(79,108,3)
-        pset(75,110,3)
+        pset(79,108,8)
+        pset(75,110,8)
     end  
-    if(flr(t*0.01)%4>1)then  
-        pset(118,100,3)
-        pset(109,84,3)
+    if(mp>=70)then  
+        pset(118,100,8)
+        pset(109,84,8)
         pset(48,116,1)
-        pset(120,82,3)
+        pset(120,82,8)
         pset(112,89,2)
         pset(58,73,1)
         pset(27,114,5)
-        pset(81,109,3)
+        pset(81,109,8)
         pset(126,91,4)
-        pset(70,106,3)
+        pset(70,106,8)
     end  
-    if(flr(t*0.01)%4>2)then 
-        pset(91,99,3)
+    if(mp>=73)then 
+        pset(91,99,8)
         pset(126,84,2)
         pset(25,102,4)
         pset(88,110,4)

@@ -93,11 +93,14 @@ function _update()
 		end
 		if(mp==76)then
 			t=0
+			pal()
 		end
 		if(mp==86)then
 			t=0
-			cx=-1
-			cy=-1
+			cx=0
+			cy=0.75
+			s=2
+			x=0
 		end
 
 		if(mp==96)then
@@ -135,8 +138,8 @@ function _draw()
 	end
 	--print(@0xc000,0,50,7)
 	--spr(0,0,0,16,16)
-	print(mp,0,70,1)
-	print(t,0,80,1)
+	-- print(mp,0,70,1)
+	-- print(t,0,80,1)
 end
 --placeholders
 function autumn()

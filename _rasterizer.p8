@@ -182,7 +182,7 @@ function draw_model()
 		vt[i+1]=y;
 		vt[i+2]=z;
 	end
-    printh(vt[4].." "..vt[5].." "..vt[6], "loggg.txt")
+    -- printh(vt[4].." "..vt[5].." "..vt[6], "loggg.txt")
 	
 	-- material
 	colors={

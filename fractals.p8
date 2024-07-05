@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-max_iter=16
+max_iter=32
 s=1.05
 cx=-1.9
 cy=0
@@ -20,29 +20,30 @@ end
 function fractal1()
     s*=.8
     local rs = -2
-    local re = 1
+    local re = 2
     local is = -1
     local ie = 1
     -- for i=-1,1,0.5 do
     --     for j=-1,1,0.5 do
-    for i=0,127,2 do
-        for j=0,63,1 do
-            local c1=rs + (i*0.0078) * (re - rs)
-            local c2=is + (j*0.0078) * (ie - is)
+    for i=0,63,1 do
+        for j=0,63,2 do
+            local c1=rs + ((i+65)*0.008) * (re - rs)
+            local c2=is + (j*0.008) * (ie - is)
             n=mandelbrot({c1*s+cx,c2*s+cy})
-            local color1 = hex(16-n)
+            local color1 = hex(n%16)
             -- local c1=rs + ((i+1)*0.0078) * (re - rs)
             -- n=mandelbrot({c1*s+cx,c2*s+cy})
             -- local color2 = hex(16-n)
-            poke(0x6000+i+j*0x40,"0x"..color1..color1)
-            poke(0x6000+j*0x40+(i+1),"0x"..color1..color1)
+            poke(0x6000+j*0x40+i,"0x"..color1..color1)
+            poke(0x6000+(j+1)*0x40+i,"0x"..color1..color1)
             poke(0x7fc0-j*0x40+i,"0x"..color1..color1)
-            poke(0x7fc0-j*0x40+(i-1),"0x"..color1..color1)
+            poke(0x7fc0-(j+1)*0x40+i,"0x"..color1..color1)
             -- pset(i,j,color)
             -- pset(i,128-j,color)
             -- print(j/128)
             -- print(c1.." "..c2.." "..n.." "..color.." "..i.." "..j)
         end
+        -- printh(i,"loggg.txt")
     end
 end
 
@@ -63,26 +64,24 @@ function julia(z1,z2)
 end
 
 function fractal2()
-    if(flr(stage)==1)then
-        cy+=0.1
-    elseif(flr(stage)==2)then
-        cy-=0.1
-    end
-    stage+=0.1
-    local rs = -1.75
-    local re = 1.75
+    x+=0.0005
+    s*=0.9
+    local rs = -1.5
+    local re = 1.5
     local is = -1
     local ie = 1
     -- for i=-1,1,0.5 do
     --     for j=-1,1,0.5 do
-    for i=1,128,1 do
-        for j=1,64,1 do
-            local z1=rs + (i*0.0078) * (re - rs)
+    for i=1,63,1 do
+        for j=1,127,2 do
+            local z1=rs + ((i+31)*0.0078) * (re - rs)
             local z2=is + (j*0.0078) * (ie - is)
-            n=julia(z1,z2)
-            local color = 16-n
-            pset(i,j,color)
-            pset(i,128-j,color)
+            n=julia(z1*s+x,z2*s)
+            local color = hex(n%16)
+            poke(0x6000+j*0x40+i,"0x"..color..color)
+            poke(0x6000+(j+1)*0x40+i,"0x"..color..color)
+            -- pset(i,j,color)
+            -- pset(i,128-j,color)
             -- print(j/128)
             -- print(c1.." "..c2.." "..n.." "..color.." "..i.." "..j)
         end
