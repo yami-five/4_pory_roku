@@ -254,7 +254,7 @@ function draw_cubes(p)
     };
     local vt={};
     local vm={};
-    for i=1,2,1 do
+    for i=1,cubes,1 do
         for j=1+vertices*3*(i-1),vertices*3*i,3 do
             local x,y,z;
             -- read
@@ -308,8 +308,8 @@ function draw_cubes(p)
         add(order,i)
         add(order,flr(sqrt((0-x)*(0-x)+(0-y)*(0-y)+(-10-z)*(-10-z))*10))
     end
-    order=order_seq(order,cubes)
-    printh(order[1].." "..order[2].." "..order[3].." "..order[4],"loggg.txt")
+    -- order=order_seq(order,cubes)
+    -- printh(order[1].." "..order[2].." "..order[3].." "..order[4],"loggg.txt")
 	faces=12;
 	f={
 		0, 2, 4,

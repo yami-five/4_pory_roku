@@ -127,90 +127,35 @@ function translation(x,y,z,xT,yT,zT)
     return x+xT,y+yT,z+zT
 end
 
-function draw_model(p,qt,vertices,v,faces,f,tc,uv)
+function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
     local r
--- transform
-    local vt={};
-    local vm={};
-    for i=1,3*vertices,3 do
-        local x,y,z;
-        -- read
-        x=v[i];
-        y=v[i+1];
-        z=v[i+2];
-            -- process
-        -- x,y,z=translation(x,y,z,1,0,0)
-        --rotacja
-        y,z=rotate(y,z,qt*0.9);
-        x,z=rotate(x,z,qt*0.3);
-        -- x,z=rotate(x,z,qt*0.3)
-        -- x,y=rotate(x,y,qt*0.3)
-        -- y,z=rotate(y,z,0.125)
-        x,y=inf(qt+p,x,y)
-        y-=1
-        add(vm,x);
-        add(vm,y);
-        add(vm,z);
-        -- x+=2*(cos(qt))+1+px
-        -- y+=sin(qt)*cos(qt)*2+py
-        --przesuwanie gora dol i na boki
-        -- x+=sin(t*0.007); 	
-        -- y+=sin(t*0.005);
-        --ustawianie wspolrzednych
-        z=z+5;
-        x=x*96/z+64;
-        y=y*96/z+64;
-            -- write
-        vt[i]=flr(x);
-        vt[i+1]=flr(y);
-        vt[i+2]=flr(z);
-    end
-    -- printh(vt[4].." "..vt[5].." "..vt[6].." "..t, "loggg.txt")
-
-    -- material
-    colors={
-        0xbbbb,
-        0x8888,
-        0xaaaa,
-        0xeeee,
-        0xdddd,
-        0xcccc,
-    }
         -- triangles
     for i=1,3*faces,3 do
         --petla wyciaga kolejne sciany z listy
-        local a,b,c,xba,yba,zba,xca,yca,zca,nv,l_dir,l_cos,l_int;
+        local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a=f[i];
         b=f[i+1];
         c=f[i+2];
         -- flat shading
         -- normal vector
-        xba=vm[b*3+1]-vm[a*3+1]
-        yba=vm[b*3+2]-vm[a*3+2]
-        zba=vm[b*3+3]-vm[a*3+3]
-        xca=vm[c*3+1]-vm[a*3+1]
-        yca=vm[c*3+2]-vm[a*3+2]
-        zca=vm[c*3+3]-vm[a*3+3]
-        nv={yba*zca-zba*yca,zba*xca-xba*zca,xba*yca-yba*xca}
+        xab=vm[b*3+1]-vm[a*3+1]
+        yab=vm[b*3+2]-vm[a*3+2]
+        zab=vm[b*3+3]-vm[a*3+3]
+        xac=vm[c*3+1]-vm[a*3+1]
+        yac=vm[c*3+2]-vm[a*3+2]
+        zac=vm[c*3+3]-vm[a*3+3]
+        nv={yab*zac-zab*yac,zab*xac-xab*zac,xab*yac-yab*xac}
         vec_len=v3_len({nv[1],nv[2],nv[3]})
-        -- printh("x="..vm[a*3+1].." "..vm[a*3+2].." "..vm[a*3+3].." ", "loggg.txt")
-        -- printh("y="..vm[b*3+1].." "..vm[b*3+2].." "..vm[b*3+3].." ", "loggg.txt")
-        -- printh("z="..vm[c*3+1].." "..vm[c*3+2].." "..vm[c*3+3].." ", "loggg.txt")
-        -- printh("x="..nv[1].." y="..nv[2].." z="..nv[3], "loggg.txt")
+        -- printh(nv[1].." "..nv[2].." "..nv[3].." ", "loggg.txt")
         nv[1]=nv[1]/vec_len
         nv[2]=nv[2]/vec_len
         nv[3]=nv[3]/vec_len
         nv_len=v3_len(nv)
-        -- printh("normal vec", "loggg.txt")
-        -- printh("x="..nv[1].." y="..nv[2].." z="..nv[3], "loggg.txt")
-        -- printh("normal vec length="..nv_len, "loggg.txt")
         -- light direction
         tx=(vm[a*3+1]+vm[b*3+1]+vm[c*3+1])/3
         ty=(vm[a*3+2]+vm[b*3+2]+vm[c*3+2])/3
         tz=(vm[a*3+3]+vm[b*3+3]+vm[c*3+3])/3
-        -- printh("tri cen", "loggg.txt")
-        -- printh("x="..tx.." y="..ty.." z="..tz, "loggg.txt")
-        l_dir={10-tx,10-ty,10-tz}
+        l_dir={50-tx,50-ty,50-tz}
         l_len=v3_len(l_dir)
         -- cos
         l_dir_nv=v3_len({l_dir[1]-nv[1],l_dir[2]-nv[2],l_dir[3]-nv[3]})
@@ -218,8 +163,6 @@ function draw_model(p,qt,vertices,v,faces,f,tc,uv)
         y=l_len*nv_len*2
         l_cos=x/y
         l_int=max(0.1,l_cos)
-        -- printh("light distance="..l_int, "loggg.txt")
-        -- printh("end", "loggg.txt")
         -- printh(nv[1].." "..nv[2].." "..nv[3].." "..vec_len, "loggg.txt")
         -- printh(l_cos.." "..x.." "..y.." "..t, "loggg.txt")
         -- printh(l_len.." "..nv_len, "loggg.txt")
@@ -233,7 +176,7 @@ function draw_model(p,qt,vertices,v,faces,f,tc,uv)
             vt[b*3+2],
             vt[c*3+1],
             vt[c*3+2],
-            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int)
+            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,texture)
     end
 end
 function draw_cube(p)
@@ -291,30 +234,153 @@ function draw_cube(p)
         1, 3, 0, 
         3, 0, 2
     }
-	draw_model(p,qt,vertices,v,faces,f,tc,uv)
+    local vt={};
+    local vm={};
+    for j=1,vertices*3,3 do
+        local x,y,z;
+        -- read
+        x=v[j];
+        y=v[j+1];
+        z=v[j+2];
+        -- printh(x.." "..y.." "..z,"loggg.txt")
+            -- process
+        -- x,y,z=translation(x,y,z,1,0,0)
+        --rotacja
+        y,z=rotate(y,z,qt*0.9);
+        x,z=rotate(x,z,qt*0.3);
+        -- x,z=rotate(x,z,qt*0.3)
+        -- x,y=rotate(x,y,qt*0.3)
+        -- y,z=rotate(y,z,0.125)
+        x,y=inf(qt+p,x,y)
+        y-=1
+        add(vm,x);
+        add(vm,y);
+        add(vm,z);
+        -- x+=2*(cos(qt))+1+px
+        -- y+=sin(qt)*cos(qt)*2+py
+        --przesuwanie gora dol i na boki
+        -- x+=sin(t*0.007); 	
+        -- y+=sin(t*0.005);
+        --ustawianie wspolrzednych
+        z=z+5;
+        x=x*96/z+64;
+        y=y*96/z+64;
+            -- write
+        vt[j]=flr(x);
+        vt[j+1]=flr(y);
+        vt[j+2]=flr(z);
+    end
+	draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
 end
 
 function draw_torus(p)
-    local qt,s;
+ 	-- cls()
+	-- stripes
+	    
+	local qt,s;
     s=0.35
 	qt=t*0.01;
 	
 	-- model
-    vertices=36
+    vertices=12
+    local order={}
+    rings=6
 	v={
-        1.5, 0.0, 0.0, 1.25, 0.43, 0.0, 0.75, 0.43, 0.0, 0.5, 0.0, 0.0, 0.75, -0.43, 0.0, 1.25, -0.43, 0.0, 0.75, 0.0, -1.3, 0.62, 0.43, -1.08, 0.38, 0.43, -0.65, 0.25, 0.0, -0.43, 0.38, -0.43, -0.65, 0.62, -0.43, -1.08, -0.75, 0.0, -1.3, -0.62, 0.43, -1.08, -0.38, 0.43, -0.65, -0.25, 0.0, -0.43, -0.38, -0.43, -0.65, -0.62, -0.43, -1.08, -1.5, 0.0, -0.0, -1.25, 0.43, -0.0, -0.75, 0.43, -0.0, -0.5, 0.0, -0.0, -0.75, -0.43, -0.0, -1.25, -0.43, -0.0, -0.75, 0.0, 1.3, -0.62, 0.43, 1.08, -0.38, 0.43, 0.65, -0.25, 0.0, 0.43, -0.38, -0.43, 0.65, -0.62, -0.43, 1.08, 0.75, 0.0, 1.3, 0.62, 0.43, 1.08, 0.38, 0.43, 0.65, 0.25, 0.0, 0.43, 0.38, -0.43, 0.65, 0.62, -0.43, 1.08
+        -0.75, 0.0, 1.3, -0.62, 0.43, 1.08, -0.38, 0.43, 0.65, -0.25, 0.0, 0.43, -0.38, -0.43, 0.65, -0.62, -0.43, 1.08, 0.75, 0.0, 1.3, 0.62, 0.43, 1.08, 0.38, 0.43, 0.65, 0.25, 0.0, 0.43, 0.38, -0.43, 0.65, 0.62, -0.43, 1.08,
+        0.75, 0.0, -1.3, 0.62, 0.43, -1.08, 0.38, 0.43, -0.65, 0.25, 0.0, -0.43, 0.38, -0.43, -0.65, 0.62, -0.43, -1.08, -0.75, 0.0, -1.3, -0.62, 0.43, -1.08, -0.38, 0.43, -0.65, -0.25, 0.0, -0.43, -0.38, -0.43, -0.65, -0.62, -0.43, -1.08,
+        0.75, 0.0, 1.3, 0.62, 0.43, 1.08, 0.38, 0.43, 0.65, 0.25, 0.0, 0.43, 0.38, -0.43, 0.65, 0.62, -0.43, 1.08, 1.5, 0.0, 0.0, 1.25, 0.43, 0.0, 0.75, 0.43, 0.0, 0.5, 0.0, 0.0, 0.75, -0.43, 0.0, 1.25, -0.43, 0.0,
+        -0.75, 0.0, -1.3, -0.62, 0.43, -1.08, -0.38, 0.43, -0.65, -0.25, 0.0, -0.43, -0.38, -0.43, -0.65, -0.62, -0.43, -1.08, -1.5, 0.0, -0.0, -1.25, 0.43, -0.0, -0.75, 0.43, -0.0, -0.5, 0.0, -0.0, -0.75, -0.43, -0.0, -1.25, -0.43, -0.0,
+        1.5, 0.0, -0.0, 1.25, 0.43, -0.0, 0.75, 0.43, -0.0, 0.5, 0.0, -0.0, 0.75, -0.43, -0.0, 1.25, -0.43, -0.0, 0.75, 0.0, -1.3, 0.62, 0.43, -1.08, 0.38, 0.43, -0.65, 0.25, 0.0, -0.43, 0.38, -0.43, -0.65, 0.62, -0.43, -1.08,
+        -1.5, 0.0, -0.0, -1.25, 0.43, -0.0, -0.75, 0.43, -0.0, -0.5, 0.0, -0.0, -0.75, -0.43, -0.0, -1.25, -0.43, -0.0, -0.75, 0.0, 1.3, -0.62, 0.43, 1.08, -0.38, 0.43, 0.65, -0.25, 0.0, 0.43, -0.38, -0.43, 0.65, -0.62, -0.43, 1.08
     };
-	faces=72;
+    local vt={};
+    local vm={};
+    for i=1,rings,1 do
+        for j=1+vertices*3*(i-1),vertices*3*i,3 do
+            local x,y,z;
+            -- read
+            x=v[j];
+            y=v[j+1];
+            z=v[j+2];
+            -- printh(x.." "..y.." "..z,"loggg.txt")
+                -- process
+            -- x,y,z=translation(x,y,z,1,0,0)
+            --rotacja
+            y,z=rotate(y,z,qt*0.9);
+            x,z=rotate(x,z,qt*0.3);
+            -- x,z=rotate(x,z,qt*0.3)
+            -- x,y=rotate(x,y,qt*0.3)
+            -- y,z=rotate(y,z,0.125)
+            x,y=inf(qt+p,x,y)
+            y-=1
+            add(vm,x);
+            add(vm,y);
+            add(vm,z);
+            -- x+=2*(cos(qt))+1+px
+            -- y+=sin(qt)*cos(qt)*2+py
+            --przesuwanie gora dol i na boki
+            -- x+=sin(t*0.007); 	
+            -- y+=sin(t*0.005);
+            --ustawianie wspolrzednych
+            z=z+5;
+            x=x*96/z+64;
+            y=y*96/z+64;
+                -- write
+            vt[j]=flr(x);
+            vt[j+1]=flr(y);
+            vt[j+2]=flr(z);
+        end
+    end
+    for i=1,rings,1 do
+        local x=0
+        local y=0
+        local z=0
+        for j=1,vertices*3,3 do
+            x+=vm[j*i]
+            y+=vm[(j+1)*i]
+            z+=vm[(j+2)*i]
+            -- printh(vt[j*i].." "..vt[(j+1)*i].." "..vt[(j+2)*i],"loggg.txt")
+        end
+        x/=vertices
+        y/=vertices
+        z/=vertices
+        -- printh(x.." "..y.." "..z,"loggg.txt")
+        -- printh("end","loggg.txt")
+        add(order,i)
+        add(order,flr(sqrt((0-x)*(0-x)+(0-y)*(0-y)+(-10-z)*(-10-z))*1000))
+    end
+    -- printh(order[1].." "..order[3].." "..order[5].." "..order[7].." "..order[9].." "..order[11],"loggg.txt")
+    -- printh(order[2].." "..order[4].." "..order[6].." "..order[8].." "..order[10].." "..order[12],"loggg.txt")
+    order=sort(order)
+    -- printh(order[1].." "..order[3].." "..order[5].." "..order[7].." "..order[9].." "..order[11],"loggg.txt")
+    -- printh(order[2].." "..order[4].." "..order[6].." "..order[8].." "..order[10].." "..order[12],"loggg.txt")
+    -- printh("end","loggg.txt")
+    -- printh(order[1].." "..order[2].." "..order[3].." "..order[4],"loggg.txt")
+	faces=12;
 	f={
-		0, 1, 6, 1, 2, 7, 2, 3, 8, 3, 4, 9, 4, 5, 10, 5, 0, 11, 6, 7, 12, 7, 8, 13, 8, 9, 14, 9, 10, 15, 10, 11, 16, 11, 6, 17, 13, 19, 12, 13, 14, 19, 14, 15, 20, 15, 16, 21, 16, 17, 22, 17, 12, 23, 18, 19, 24, 19, 20, 25, 20, 21, 26, 21, 22, 27, 22, 23, 28, 23, 18, 29, 24, 25, 30, 26, 32, 25, 26, 27, 32, 27, 28, 33, 29, 35, 28, 29, 24, 35, 31, 1, 30, 31, 32, 1, 32, 33, 2, 33, 34, 3, 34, 35, 4, 35, 30, 5, 1, 7, 6, 2, 8, 7, 3, 9, 8, 4, 10, 9, 5, 11, 10, 0, 6, 11, 7, 13, 12, 8, 14, 13, 9, 15, 14, 10, 16, 15, 11, 17, 16, 6, 12, 17, 19, 18, 12, 14, 20, 19, 15, 21, 20, 16, 22, 21, 17, 23, 22, 12, 18, 23, 19, 25, 24, 20, 26, 25, 21, 27, 26, 22, 28, 27, 23, 29, 28, 18, 24, 29, 25, 31, 30, 32, 31, 25, 27, 33, 32, 28, 34, 33, 35, 34, 28, 24, 30, 35, 1, 0, 30, 32, 2, 1, 33, 3, 2, 34, 4, 3, 35, 5, 4, 30, 0, 5
+		0, 1, 6, 2, 8, 1, 2, 3, 8, 3, 4, 9, 5, 11, 4, 5, 0, 11, 1, 7, 6, 8, 7, 1, 3, 9, 8, 4, 10, 9, 11, 10, 4, 0, 6, 11
 	}
     tc={
-        1.0, 0.5, 0.0, 0.67, 0.0, 0.5, 1.0, 0.67, 0.0, 0.83, 1.0, 0.83, 0.0, 1.0, 1.0, -0.0, 0.0, 0.17, -0.0, 0.0, 1.0, 0.17, 0.0, 0.33, 1.0, 0.33, 1.0, 0.5, 0.0, 0.67, -0.0, 0.5, 1.0, 0.67, 0.0, 0.83, 1.0, 0.83, 0.0, 1.0, 1.0, -0.0, -0.0, 0.17, -0.0, 0.0, 1.0, 0.17, -0.0, 0.33, 1.0, 0.33, 1.0, 1.0, 1.0, 1.0
+        1.0, 0.5, 0.0, 0.67, -0.0, 0.5, 1.0, 0.83, 0.0, 0.83, 0.0, 1.0, 1.0, -0.0, -0.0, 0.17, -0.0, 0.0, 1.0, 0.33, -0.0, 0.33, 1.0, 0.67, 1.0, 1.0, 1.0, 0.17
     }
     uv={
-        2, 1, 0, 1, 4, 3, 4, 6, 5, 9, 8, 7, 8, 11, 10, 11, 2, 12, 15, 14, 13, 14, 17, 16, 17, 19, 18, 22, 21, 20, 21, 24, 23, 24, 15, 25, 14, 16, 15, 14, 17, 16, 17, 19, 18, 22, 21, 20, 21, 24, 23, 24, 15, 25, 15, 14, 13, 14, 17, 16, 17, 19, 18, 22, 21, 20, 21, 24, 23, 24, 15, 25, 15, 14, 13, 17, 18, 14, 17, 19, 18, 22, 21, 20, 24, 25, 21, 24, 15, 25, 14, 16, 15, 14, 17, 16, 17, 19, 18, 22, 21, 20, 21, 24, 23, 24, 15, 25, 1, 3, 0, 4, 5, 3, 6, 26, 5, 8, 10, 7, 11, 12, 10, 2, 0, 12, 14, 16, 13, 17, 18, 16, 19, 27, 18, 21, 23, 20, 24, 25, 23, 15, 13, 25, 16, 13, 15, 17, 18, 16, 19, 27, 18, 21, 23, 20, 24, 25, 23, 15, 13, 25, 14, 16, 13, 17, 18, 16, 19, 27, 18, 21, 23, 20, 24, 25, 23, 15, 13, 25, 14, 16, 13, 18, 16, 14, 19, 27, 18, 21, 23, 20, 25, 23, 21, 15, 13, 25, 16, 13, 15, 17, 18, 16, 19, 27, 18, 21, 23, 20, 24, 25, 23, 15, 13, 25
+        2, 1, 0, 4, 3, 1, 4, 5, 3, 8, 7, 6, 10, 9, 7, 10, 2, 9, 1, 11, 0, 3, 11, 1, 5, 12, 3, 7, 13, 6, 9, 13, 7, 2, 0, 9
     }
-	draw_model(p,qt,vertices,v,faces,f,tc,uv)
+    -- printh(order[1].." "..order[2].." "..order[3].." "..order[4],"loggg.txt")
+    -- printh(order[5].." "..order[6].." "..order[7].." "..order[8],"loggg.txt")
+    -- printh(order[9].." "..order[10].." "..order[11].." "..order[12],"loggg.txt")
+    for i=1,rings*2,2 do
+        local v_r={}
+        local vm_r={}
+        for j=1+vertices*3*(order[i]-1),vertices*3*order[i] do
+            add(v_r,vt[j])
+            add(vm_r,vm[j])
+        end
+	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,texture)
+        -- print(order[1].." "..order[2].." "..order[3].." "..order[4],0)
+        -- print(order[1].." "..order[2],0)
+    end
+    -- printh("end","loggg.txt")
 end
 
 function _update()
@@ -355,23 +421,41 @@ end
 function _draw()
     cls()
     background()
-    draw_cube(0)
-    draw_cube(0.1)
-    draw_cube(0.2)
-    draw_cube(0.3)
-    draw_cube(0.4)
-    draw_cube(0.5)
+   draw_cube(0)
+   draw_cube(0.1)
+   draw_cube(0.2)
+   draw_cube(0.3)
+   draw_cube(0.4)
+   draw_cube(0.5)
     -- draw_torus(0)
     mirror()
 end
 
-function bridge1()
+function sort(seq)
+    for i=1,#seq,2 do
+        local max=i+1
+        for j=i,#seq,2 do
+            if(seq[max]<=seq[j+1]) then
+                max=j+1
+            end
+        end
+        tmp=seq[i+1]
+        seq[i+1]=seq[max]
+        seq[max]=tmp
+        tmp=seq[i]
+        seq[i]=seq[max-1]
+        seq[max-1]=tmp
+    end
+    return seq
+end
+
+function bridge2()
     background()
     draw_torus(0)
     mirror()    
 end
 
-function bridge2()
+function bridge1()
     background()
     draw_cube(0)
     draw_cube(0.1)
