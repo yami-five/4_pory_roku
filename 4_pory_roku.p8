@@ -6,6 +6,7 @@ __lua__
 #include intro.p8
 #include spring.p8
 #include summer.p8
+#include autumn.p8
 #include rasterizer.p8
 #include fractals.p8
 
@@ -15,6 +16,7 @@ melted = 0
 mp=0
 p_elapsed=0
 rings=0
+bees = {}
 function _init()
 	music(0)
 	load_font()
@@ -45,6 +47,10 @@ function _update()
 			px9_decomp(0,0,0xcf00,sget,sset)
 		end
 		if(mp==20)then
+			for i=1,40 do
+				add(bees,rnd(64)+32)
+				add(bees,rnd(128)-560)
+			end
 			t=0
 			pal(2,132,1)
 			pal(7,140,1)
@@ -67,6 +73,13 @@ function _update()
 			memcpy(0x8000,0x6000,0x2000)
 			px9_decomp(0,0,0xf000,sget,sset) 
 		end
+		--0x8000 - wioska 
+		--0xe000 - 1 grafika
+		--0xe600 - 2 grafika
+		--0xeb00 - 3 grafika
+		--0xf000 - sprity
+		--0xf500 - tlo do 3d 
+
 		if(mp==28)then
 			t=0
 		end
@@ -77,14 +90,23 @@ function _update()
 		end
 		if(mp==52)then
 			t=0
+			memcpy(0xa000,0x0000,0x2000)
+			px9_decomp(0,0,0xf500,sget,sset) 
+			pal(8,139,1)
+			pal(15,141,1)
+			pal(6,139,1)
+			pal(5,2,1)
+			pal(7,11,1)
 		end
 		if(mp==64)then
 			t=0
+			pal()
+			memcpy(0x0000,0xa000,0x2000)
 			pal(2,132,1)
 			pal(7,140,1)
-			pal(8,128,1)
+			pal(10,7,1)
 			pal(11,138,1)
-			pal(13,14,1)
+			pal(13,12,1)
 			pal(14,11,1)
 			pal(15,9,1)
 			pal(9,135,1)
@@ -105,6 +127,33 @@ function _update()
 
 		if(mp==96)then
 			t=0
+			memcpy(0xa000,0x0000,0x2000)
+			px9_decomp(0,0,0xf500,sget,sset)
+			pal(8,139,1)
+			pal(15,140,1)
+			pal(6,139,1)
+			pal(5,2,1)
+			pal(7,11,1)
+			pal(13,135,1)
+			pal(14,137,1)
+			pal(10,136,1)
+			pal(2,10,1)
+		end
+		if(mp==112)then
+			t=0
+			pal()
+			memcpy(0x0000,0xa000,0x2000)
+			pal(2,132,1)
+			pal(7,1,1)
+			pal(10,9,1)
+			pal(11,138,1)
+			pal(13,9,1)
+			pal(14,137,1)
+			pal(15,9,1)
+			pal(15,4,1)
+			pal(3,4,1)
+			pal(6,134,1)
+			pal(12,140,1)
 		end
 	end
 	p_elapsed=elapsed
@@ -142,16 +191,12 @@ function _draw()
 	-- print(t,0,80,1)
 end
 --placeholders
-function autumn()
-	print("autumn",64,64,10)
-end
 function bridge3()
 	print("bridge3",64,64,10)
 end
 function winter()
 	print("winter",64,64,10)
 end
-__gfx__
 __sfx__
 410c00000e55010550115501154011530115200e5500e55010550105201055011550135501155010550105200e55010550115501154011530115200e5500e5500c5500c5200c5500e550105500e5500c5500c520
 410c00000e55010550115501154011530115200e5500e550105501052010550115501355011550105501052011550115200e5500e520105500e5500c5500c5200e5500e5200e5500e5200c5500c5201055010520

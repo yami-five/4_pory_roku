@@ -12,6 +12,10 @@ function summer()
         spr(10+64,84,21,2,2)
         spr(12+64,89,39,2,2)
         flowers()
+        birds()
+		for i=1,80,2 do
+			spr(112,bees[i+1]+t*3,bees[i],2,2)
+		end
     elseif(mp<86)then
         fractal1()
     elseif(mp<96)then
@@ -56,4 +60,10 @@ function flowers()
         pset(108,102,1)
         pset(35,106,2) 
     end
+end
+
+function birds()
+    spr((flr(t*0.1)%2)%10+96,flr(t*0.1)-5,110)
+    spr((flr(t*0.1)%2)%10+106,70-flr(t*0.1),96,1,1,-1) 
+    spr(flr(t*0.1)%3+108,48,21)   
 end

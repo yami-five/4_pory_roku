@@ -28,17 +28,28 @@ function spring()
 end
 
 function draw_plasma()
-	for y=16,111,1 do
-		for x=16,111,1 do
+	for x=0,63,1 do
+		for y=0,63,1 do
 			c=(
-				16+(16*sin(x*0.016-t))+
-				16+(16*sin(y*0.008-t))+
-				16+(16*sin((x%2+y%2)*0.016-t))+
-				16+(16*sin(sqrt(x*x+y*y-t)*0.008))
+				16+(16*sin(x*0.016+sin(t*0.01)))+
+				16+(16*sin(y*0.008+sin(t*0.01)))+
+				16+(16*sin(sqrt((x-63)%2*(x-63)%2+(y-63)%2*(y-63)%2)*0.016+sin(t*0.01)))+
+				16+(16*sin(sqrt(x*x+y*y)*0.004+sin(t*0.01)))
 			)*0.25
-			pset(x,y,(c+t)%6+8)
+            
+			pset(x*2,y*2,(c+t)%6+8)
+            pset(x*2+1,y*2,(c+t)%6+8)
+			pset(x*2,y*2+1,(c+t)%6+8)
+            pset(x*2+1,y*2+1,(c+t)%6+8)
 		end
 	end
+end
+
+function hex(value)
+	result=tostr(value,true)
+	result=sub(result,6,6)
+    -- printh(result,"loggg.txt")
+	return result
 end
 
 function scroller()
@@ -82,3 +93,14 @@ function leaves()
     spr(10+(32*(flr(t*0.02)%3)),84,21,2,2)
     spr(12+(32*(flr(t*0.02)%3)),89,39,2,2)
 end
+
+-- t=0
+-- function _update()
+--    t+=1 
+-- end
+
+-- function _draw()
+--     cls()
+--     draw_plasma()   
+--     print(t,0)
+-- end

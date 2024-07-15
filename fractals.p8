@@ -66,20 +66,25 @@ end
 function fractal2()
     x+=0.0005
     s*=0.9
-    local rs = -1.5
-    local re = 1.5
+    local rs = -1
+    local re = 1
     local is = -1
     local ie = 1
     -- for i=-1,1,0.5 do
     --     for j=-1,1,0.5 do
-    for i=1,63,1 do
+    for i=1,127,2 do
         for j=1,127,2 do
-            local z1=rs + ((i+31)*0.0078) * (re - rs)
+            local z1=rs + (i*0.0078) * (re - rs)
             local z2=is + (j*0.0078) * (ie - is)
             n=julia(z1*s+x,z2*s)
-            local color = hex(n%16)
-            poke(0x6000+j*0x40+i,"0x"..color..color)
-            poke(0x6000+(j+1)*0x40+i,"0x"..color..color)
+            -- local color = hex(n%16)
+            local color = n%16
+            -- poke(0x6000+j*0x40+i,"0x"..color..color)
+            -- poke(0x6000+(j+1)*0x40+i,"0x"..color..color)
+            pset(i,j,color)
+            pset(i+1,j,color)
+            pset(i,j+1,color)
+            pset(i+1,j+1,color)
             -- pset(i,j,color)
             -- pset(i,128-j,color)
             -- print(j/128)
