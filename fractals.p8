@@ -23,34 +23,19 @@ function fractal1()
     local re = 2
     local is = -1
     local ie = 1
-    -- for i=-1,1,0.5 do
-    --     for j=-1,1,0.5 do
     for i=0,63,1 do
         for j=0,63,2 do
             local c1=rs + ((i+65)*0.008) * (re - rs)
             local c2=is + (j*0.008) * (ie - is)
             n=mandelbrot({c1*s+cx,c2*s+cy})
             local color1 = hex(n%16)
-            -- local c1=rs + ((i+1)*0.0078) * (re - rs)
-            -- n=mandelbrot({c1*s+cx,c2*s+cy})
-            -- local color2 = hex(16-n)
             poke(0x6000+j*0x40+i,"0x"..color1..color1)
             poke(0x6000+(j+1)*0x40+i,"0x"..color1..color1)
             poke(0x7fc0-j*0x40+i,"0x"..color1..color1)
             poke(0x7fc0-(j+1)*0x40+i,"0x"..color1..color1)
-            -- pset(i,j,color)
-            -- pset(i,128-j,color)
-            -- print(j/128)
-            -- print(c1.." "..c2.." "..n.." "..color.." "..i.." "..j)
         end
-        -- printh(i,"loggg.txt")
     end
 end
-
--- s=1.05
--- cx=-1
--- cy=-1
--- stage=1
 function julia(z1,z2)
     local z={z1,z2}
     local n=0
@@ -70,25 +55,16 @@ function fractal2()
     local re = 1
     local is = -1
     local ie = 1
-    -- for i=-1,1,0.5 do
-    --     for j=-1,1,0.5 do
     for i=1,127,2 do
         for j=1,127,2 do
             local z1=rs + (i*0.0078) * (re - rs)
             local z2=is + (j*0.0078) * (ie - is)
             n=julia(z1*s+x,z2*s)
-            -- local color = hex(n%16)
             local color = n%16
-            -- poke(0x6000+j*0x40+i,"0x"..color..color)
-            -- poke(0x6000+(j+1)*0x40+i,"0x"..color..color)
             pset(i,j,color)
             pset(i+1,j,color)
             pset(i,j+1,color)
             pset(i+1,j+1,color)
-            -- pset(i,j,color)
-            -- pset(i,128-j,color)
-            -- print(j/128)
-            -- print(c1.." "..c2.." "..n.." "..color.." "..i.." "..j)
         end
     end
 end
@@ -96,7 +72,6 @@ end
 function hex(value)
 	result=tostr(value,true)
 	result=sub(result,6,6)
-    -- printh(result,"loggg.txt")
 	return result
 end
 __gfx__

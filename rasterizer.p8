@@ -5,7 +5,6 @@ __lua__
 t=0
 texture='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55556665555555665555555665555677655556676eee6e77e6eee6776eee6eeee6eee676655556ee655556655555556655555556665555ee55556667776555ee55567777777655ee556777777776566665677776777656776567776'
 function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int)
-    -- cieniowanie: zliczaj piksele i rysuj co ktれはryわい tylko
     if (y<0 or y>127) return
     local q,n
     n=(flr(y)%2)*0.5
@@ -47,7 +46,7 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int)
     if (y1>y2) y=y1;y1=y2;y2=y;x=x1;x1=x2;x2=x;uv=uv1;uv1=uv2;uv2=uv;
     local dx01,dy01,dx02,dy02;
     local xd,xxd;
-    if (y2<0 or y0>127) return --clip
+    if (y2<0 or y0>127) return
     y=y0;
     x=x0;
     xx=x0;
@@ -128,10 +127,7 @@ function translation(x,y,z,xT,yT,zT)
 end
 
 function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
-    local r
-        -- triangles
     for i=1,3*faces,3 do
-        --petla wyciaga kolejne sciany z listy
         local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a=f[i];
         b=f[i+1];
@@ -146,7 +142,6 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
         zac=vm[c*3+3]-vm[a*3+3]
         nv={yab*zac-zab*yac,zab*xac-xab*zac,xab*yac-yab*xac}
         vec_len=v3_len({nv[1],nv[2],nv[3]})
-        -- printh(nv[1].." "..nv[2].." "..nv[3].." ", "loggg.txt")
         nv[1]=nv[1]/vec_len
         nv[2]=nv[2]/vec_len
         nv[3]=nv[3]/vec_len
@@ -163,12 +158,6 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
         y=l_len*nv_len*2
         l_cos=x/y
         l_int=max(0.1,l_cos)
-        -- printh(nv[1].." "..nv[2].." "..nv[3].." "..vec_len, "loggg.txt")
-        -- printh(l_cos.." "..x.." "..y.." "..t, "loggg.txt")
-        -- printh(l_len.." "..nv_len, "loggg.txt")
-        -- printh(l_int, "loggg.txt")
-        -- printh(".....................", "loggg.txt")
-        -- printh(l_int.." "..t, "loggg.txt")
         tric(
             vt[a*3+1],
             vt[a*3+2],
@@ -180,14 +169,9 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
     end
 end
 function draw_cube(p)
-	-- cls()
-	-- stripes
-	    
 	local qt,s;
     s=0.35
 	qt=t*0.01;
-	
-	-- model
     vertices=8
 	v={
         1.0*s, 1.0*s, -1.0*s, 
@@ -238,34 +222,19 @@ function draw_cube(p)
     local vm={};
     for j=1,vertices*3,3 do
         local x,y,z;
-        -- read
         x=v[j];
         y=v[j+1];
         z=v[j+2];
-        -- printh(x.." "..y.." "..z,"loggg.txt")
-            -- process
-        -- x,y,z=translation(x,y,z,1,0,0)
-        --rotacja
         y,z=rotate(y,z,qt*0.9);
         x,z=rotate(x,z,qt*0.3);
-        -- x,z=rotate(x,z,qt*0.3)
-        -- x,y=rotate(x,y,qt*0.3)
-        -- y,z=rotate(y,z,0.125)
         x,y=inf(qt+p,x,y)
         y-=1
         add(vm,x);
         add(vm,y);
         add(vm,z);
-        -- x+=2*(cos(qt))+1+px
-        -- y+=sin(qt)*cos(qt)*2+py
-        --przesuwanie gora dol i na boki
-        -- x+=sin(t*0.007); 	
-        -- y+=sin(t*0.005);
-        --ustawianie wspolrzednych
         z=z+5;
         x=x*96/z+64;
         y=y*96/z+64;
-            -- write
         vt[j]=flr(x);
         vt[j+1]=flr(y);
         vt[j+2]=flr(z);
@@ -274,14 +243,9 @@ function draw_cube(p)
 end
 
 function draw_torus(p)
- 	-- cls()
-	-- stripes
-	    
 	local qt,s;
     s=0.35
 	qt=t*0.01;
-	
-	-- model
     vertices=12
     local order={}
     rings=6
@@ -298,34 +262,19 @@ function draw_torus(p)
     for i=1,rings,1 do
         for j=1+vertices*3*(i-1),vertices*3*i,3 do
             local x,y,z;
-            -- read
             x=v[j];
             y=v[j+1];
             z=v[j+2];
-            -- printh(x.." "..y.." "..z,"loggg.txt")
-                -- process
-            -- x,y,z=translation(x,y,z,1,0,0)
-            --rotacja
             y,z=rotate(y,z,qt*0.9);
             x,z=rotate(x,z,qt*0.3);
-            -- x,z=rotate(x,z,qt*0.3)
-            -- x,y=rotate(x,y,qt*0.3)
-            -- y,z=rotate(y,z,0.125)
             x,y=inf(qt+p,x,y)
             y-=1
             add(vm,x);
             add(vm,y);
             add(vm,z);
-            -- x+=2*(cos(qt))+1+px
-            -- y+=sin(qt)*cos(qt)*2+py
-            --przesuwanie gora dol i na boki
-            -- x+=sin(t*0.007); 	
-            -- y+=sin(t*0.005);
-            --ustawianie wspolrzednych
             z=z+5;
             x=x*96/z+64;
             y=y*96/z+64;
-                -- write
             vt[j]=flr(x);
             vt[j+1]=flr(y);
             vt[j+2]=flr(z);
@@ -339,24 +288,15 @@ function draw_torus(p)
             x+=vm[j*i]
             y+=vm[(j+1)*i]
             z+=vm[(j+2)*i]
-            -- printh(vt[j*i].." "..vt[(j+1)*i].." "..vt[(j+2)*i],"loggg.txt")
         end
         x/=vertices
         y/=vertices
         z/=vertices
-        -- printh(x.." "..y.." "..z,"loggg.txt")
-        -- printh("end","loggg.txt")
         add(order,i)
         add(order,flr(sqrt((0-x)*(0-x)+(0-y)*(0-y)+(-10-z)*(-10-z))*1000))
     end
-    -- printh(order[1].." "..order[3].." "..order[5].." "..order[7].." "..order[9].." "..order[11],"loggg.txt")
-    -- printh(order[2].." "..order[4].." "..order[6].." "..order[8].." "..order[10].." "..order[12],"loggg.txt")
     order=sort(order)
-    -- printh(order[1].." "..order[3].." "..order[5].." "..order[7].." "..order[9].." "..order[11],"loggg.txt")
-    -- printh(order[2].." "..order[4].." "..order[6].." "..order[8].." "..order[10].." "..order[12],"loggg.txt")
-    -- printh("end","loggg.txt")
-    -- printh(order[1].." "..order[2].." "..order[3].." "..order[4],"loggg.txt")
-	faces=12;
+    faces=12;
 	f={
 		0, 1, 6, 2, 8, 1, 2, 3, 8, 3, 4, 9, 5, 11, 4, 5, 0, 11, 1, 7, 6, 8, 7, 1, 3, 9, 8, 4, 10, 9, 11, 10, 4, 0, 6, 11
 	}
@@ -366,9 +306,6 @@ function draw_torus(p)
     uv={
         2, 1, 0, 4, 3, 1, 4, 5, 3, 8, 7, 6, 10, 9, 7, 10, 2, 9, 1, 11, 0, 3, 11, 1, 5, 12, 3, 7, 13, 6, 9, 13, 7, 2, 0, 9
     }
-    -- printh(order[1].." "..order[2].." "..order[3].." "..order[4],"loggg.txt")
-    -- printh(order[5].." "..order[6].." "..order[7].." "..order[8],"loggg.txt")
-    -- printh(order[9].." "..order[10].." "..order[11].." "..order[12],"loggg.txt")
     for i=1,rings*2,2 do
         local v_r={}
         local vm_r={}
@@ -377,16 +314,12 @@ function draw_torus(p)
             add(vm_r,vm[j])
         end
 	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,texture)
-        -- print(order[1].." "..order[2].." "..order[3].." "..order[4],0)
-        -- print(order[1].." "..order[2],0)
     end
-    -- printh("end","loggg.txt")
 end
 
-function _update()
-    t+=1
-	
-end
+-- function _update()
+--     t+=1
+-- end
 function v3_len(vec)
     return sqrt(vec[1]*vec[1]+vec[2]*vec[2]+vec[3]*vec[3])        
 end
@@ -399,11 +332,6 @@ end
 
 function background()
     spr(0,0,0,16,16)
-    -- for i=0,3,1 do
-    --     rectfill(0+i*32,0,15+i*32,86,10)
-    --     rectfill(16+i*32,0,31+i*32,86,14)    
-    -- end
-    spr()
 end
 
 function mirror()
@@ -411,27 +339,19 @@ function mirror()
         for j=0,64,2 do
             if(i%2==0)then
                 poke(0x7fc0-i*64+j,@(0x6000+i*128+j))
-                -- poke(0x7fc0-i*64+j-1,0x11)
             else 
                 poke(0x7fc0-i*64+j-1,@(0x6000+i*128+j-1))
-            --     poke(0x7fc0-i*64+j,0x11)
             end
         end
     end
 end
 
-function _draw()
-    cls()
-    background()
---    draw_cube(0)
---    draw_cube(0.1)
---    draw_cube(0.2)
---    draw_cube(0.3)
---    draw_cube(0.4)
---    draw_cube(0.5)
-    draw_torus(0)
-    mirror()
-end
+-- function _draw()
+--     cls()
+--     background()
+--     draw_torus(0)
+--     mirror()
+-- end
 
 function sort(seq)
     for i=1,#seq,2 do
@@ -459,12 +379,9 @@ end
 
 function bridge1()
     background()
-    draw_cube(0)
-    draw_cube(0.1)
-    draw_cube(0.2)
-    draw_cube(0.3)
-    draw_cube(0.4)
-    draw_cube(0.5)
+    for i=0,5 do
+        draw_cube(i*0.1)
+    end
     mirror()      
 end
 __gfx__
