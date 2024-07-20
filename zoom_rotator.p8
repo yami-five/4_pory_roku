@@ -35,10 +35,10 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size)
         uv_x=Ba*uv0[1]+Bb*uv1[1]+Bc*uv2[1]
         uv_y=Ba*uv0[2]+Bb*uv1[2]+Bc*uv2[2]
         uv_x = max(0, min(1, uv_x))
-        uv_x=flr(uv_x*tex_size)+1
+        uv_x=flr(uv_x*tex_size+0.5)+1
         uv_y = max(0, min(1, uv_y))
-        uv_y=flr(uv_y*tex_size)+1
-        texture_index=flr((uv_y-1) *tex_size + uv_x)
+        uv_y=flr(uv_y*tex_size+0.5)
+        texture_index=flr(uv_y *tex_size + uv_x+0.5)
         texture_index = max(0, min(tex_size*tex_size, texture_index))
         local texture_color1 = sub(texture,texture_index,texture_index)
         local color
