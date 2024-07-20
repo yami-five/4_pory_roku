@@ -165,7 +165,7 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture)
             vt[b*3+2],
             vt[c*3+1],
             vt[c*3+2],
-            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,texture)
+            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int)
     end
 end
 function draw_cube(p)
