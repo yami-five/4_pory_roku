@@ -1,21 +1,17 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include px9_dec.p8
 -- texture='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55556665555555665555555665555677655556676eee6e77e6eee6776eee6eeee6eee676655556ee655556655555556655555556665555ee55556667776555ee55567777777655ee556777777776566665677776777656776567776'
 t=0
-texture="0"
-function _init()
-    image=sub(tostr(@0,true),5,6)
-    for i=1,8191,1 do
-        image=image..sub(tostr(@i,true),5,6)
-    end
-    texture=image
-    -- memcpy(0x8000,0x0000,0x2000)
-    -- px9_decomp(0,0,0x8000,sget,sset) 
-    -- memcpy(0x8000,0x0000,0x2000)
-end
-function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size)
+-- texture="0"
+-- function _init()
+--     image=sub(tostr(@0,true),5,6)
+--     for i=1,8191,1 do
+--         image=image..sub(tostr(@i,true),5,6)
+--     end
+--     texture=image
+-- end
+function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture)
     if (y<0 or y>127) return
     local q,n
     n=(flr(y)%2+0.5)*0.5
@@ -50,7 +46,7 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size)
     end
 end
     
-function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size)
+function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size,texture)
     local x,xx,y,q,q2,uv;
     if (y0>y1) y=y0;y0=y1;y1=y;x=x0;x0=x1;x1=x;uv=uv0;uv0=uv1;uv1=uv;
     if (y0>y2) y=y0;y0=y2;y2=y;x=x0;x0=x2;x2=x;uv=uv0;uv0=uv2;uv2=uv;
@@ -74,7 +70,7 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size)
         q=0;
         xd=1; if(x1<x0) xd=-1
         while y<=y1 do
-            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size);
+            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size,texture);
             y+=1;
             q+=dx01;
             q2+=dx02;
@@ -94,7 +90,7 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size)
         x=x1
         xd=1; if (x2<x1) xd=-1
         while y<=y2 and y<128 do
-            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size);
+            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size,texture);
             y+=1;
             q+=dx12;
             q2+=dx02;
@@ -110,7 +106,7 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size)
     end
 end
     
-function tric(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size)
+function tric(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size,texture)
     local e1x,e1y,e2x,e2y,xpr;
     e1x=c-a;
     e1y=d-b;
@@ -118,7 +114,7 @@ function tric(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size)
     e2y=f-b;
     xpr=e1x*e2y-e1y*e2x;
     if (xpr<0) return;
-    return tri(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size);
+    return tri(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size,texture);
 end
     
     
@@ -137,8 +133,10 @@ function translation(x,y,z,xT,yT,zT)
     return x+xT,y+yT,z+zT
 end
 
-function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture,calc_light,tex_size)
+function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
+    local textures={draw_plasma(0),draw_plasma(4),draw_plasma(8)}
     for i=1,3*faces,3 do
+        printh(flr(i/6%3)+1,"loggg.txt")
         local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a=f[i];
         b=f[i+1];
@@ -179,12 +177,12 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture,calc_light,tex_siz
             vt[b*3+2],
             vt[c*3+1],
             vt[c*3+2],
-            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,tex_size)
+            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,32,textures[flr(i/6%3)+1])
     end
 end
 function draw_cube(p)
 	local qt,s;
-    s=0.35
+    s=1.5
 	qt=t*0.01;
     local vertices=8
 	local v={
@@ -240,9 +238,9 @@ function draw_cube(p)
         y=v[j+1];
         z=v[j+2];
         y,z=rotate(y,z,qt*0.9);
-        x,z=rotate(x,z,qt*0.3);
-        x,y=inf(qt+p,x,y)
-        y-=1
+        x,z=rotate(x,z,qt*0.5);
+        -- x,y=inf(qt+p,x,y)
+        -- y-=1
         add(vm,x);
         add(vm,y);
         add(vm,z);
@@ -253,7 +251,7 @@ function draw_cube(p)
         vt[j+1]=flr(y);
         vt[j+2]=flr(z);
     end
-	draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,texture,true,16)
+	draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,false,128)
 end
 
 function draw_torus(p)
@@ -384,6 +382,88 @@ function zoom_rotator(p)
     end
 end
 
+function draw_cube_anim(p)
+    local texture1="111111111"
+    local texture2="222222222"
+    local texture3="333333333"
+    -- for i=1,8191,1 do
+    --     texture1=texture1..sub(tostr(0x8000+@i,true),5,6)
+    --     texture2=texture2..sub(tostr(0xa000+@i,true),5,6)
+    --     texture3=texture3..sub(tostr(0xc000+@i,true),5,6)
+    -- end
+    local textures={texture1,texture2,texture3}
+    local qt,s;
+    s=0.35
+	qt=t*0.01;
+    local vertices=8
+	local v={
+        1.0*s, 1.0*s, -1.0*s, 
+        1.0*s, -1.0*s, -1.0*s, 
+        1.0*s, 1.0*s, 1.0*s, 
+        1.0*s, -1.0*s, 1.0*s, 
+        -1.0*s, 1.0*s, -1.0*s, 
+        -1.0*s, -1.0*s, -1.0*s, 
+        -1.0*s, 1.0*s, 1.0*s, 
+        -1.0*s, -1.0*s, 1.0*s
+    };
+	local faces=12;
+	local f={
+		0, 2, 4,
+        3, 7, 2,
+        7, 5, 6,
+        5, 7, 1,
+        1, 3, 0,
+        5, 1, 4, 
+        2, 6, 4, 
+        7, 6, 2, 
+        5, 4, 6, 
+        7, 3, 1, 
+        3, 2, 0, 
+        1, 0, 4
+	}
+    local tc={
+        1.0, 0.0, 
+        0.0, 1.0, 
+        0.0, 0.0, 
+        1.0, 1.0,
+    }
+    local uv={
+        2, 1, 0, 
+        2, 1, 0, 
+        1, 3, 2, 
+        0, 2, 3, 
+        2, 1, 0, 
+        1, 3, 2, 
+        1, 3, 0, 
+        1, 3, 0, 
+        3, 0, 2, 
+        2, 1, 3, 
+        1, 3, 0, 
+        3, 0, 2
+    }
+    local vt={};
+    local vm={};
+    for j=1,vertices*3,3 do
+        local x,y,z;
+        x=v[j];
+        y=v[j+1];
+        z=v[j+2];
+        y,z=rotate(y,z,qt*0.9);
+        x,z=rotate(x,z,qt*0.3);
+        x,y=inf(qt+p,x,y)
+        y-=1
+        add(vm,x);
+        add(vm,y);
+        add(vm,z);
+        z=z+5;
+        x=x*96/z+64;
+        y=y*96/z+64;
+        vt[j]=flr(x);
+        vt[j+1]=flr(y);
+        vt[j+2]=flr(z);
+    end
+end
+
 function v3_len(vec)
     return sqrt(vec[1]*vec[1]+vec[2]*vec[2]+vec[3]*vec[3])        
 end
@@ -416,10 +496,15 @@ end
 
 function _draw()
     cls()
-    printh(peek(0,8192),'@clip')
+    -- draw_plasma(0x6000,0)
+    -- draw_plasma(0x8000,0)
+    -- memcpy(0x6000,0x8000,0x2000)
+    -- draw_plasma(0xa000)
+    -- draw_plasma(0xc000)
     -- background()
-    zoom_rotator(0)
+    -- zoom_rotator(0)
     -- mirror()
+     draw_cube(0)
 end
 
 function sort(seq)
@@ -438,6 +523,28 @@ function sort(seq)
         seq[max-1]=tmp
     end
     return seq
+end
+
+function draw_plasma(m)
+    -- memset(mem_part,0,0x2000)
+    local plasma=""
+	for x=0,31,1 do
+		for y=0,31,1 do
+			c=sub(tostr(((
+				16+(16*sin(x*0.016+sin(t*0.001)))+
+				16+(16*sin(y*0.008+sin(t*0.001)))+
+				16+(16*sin(sqrt((x-63)%2*(x-63)%2+(y-63)%2*(y-63)%2)*0.016+sin(t*0.01)))+
+				16+(16*sin(sqrt(x*x+y*y)*0.004+sin(t*0.01)))
+			)*0.25+t)%6+m,true),6,6)
+            plasma=plasma..c
+            -- printh(c..c,"loggg.txt")
+			-- pset(x*2,y*2,(c+t)%6)
+            -- pset(x*2+1,y*2,(c+t)%6)
+			-- pset(x*2,y*2+1,(c+t)%6)
+            -- pset(x*2+1,y*2+1,(c+t)%6)
+		end
+	end
+    return plasma
 end
 
 function bridge2()
