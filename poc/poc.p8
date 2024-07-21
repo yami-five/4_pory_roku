@@ -134,9 +134,8 @@ function translation(x,y,z,xT,yT,zT)
 end
 
 function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
-    local textures={draw_plasma(0),draw_plasma(4),draw_plasma(8)}
+    local textures=draw_plasmas(0,2,4,6,8,10)
     for i=1,3*faces,3 do
-        printh(flr(i/6%3)+1,"loggg.txt")
         local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a=f[i];
         b=f[i+1];
@@ -177,7 +176,7 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
             vt[b*3+2],
             vt[c*3+1],
             vt[c*3+2],
-            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,32,textures[flr(i/6%3)+1])
+            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,32,textures[flr(i/3%6)+1])
     end
 end
 function draw_cube(p)
@@ -237,8 +236,8 @@ function draw_cube(p)
         x=v[j];
         y=v[j+1];
         z=v[j+2];
-        y,z=rotate(y,z,qt*0.9);
-        x,z=rotate(x,z,qt*0.5);
+        y,z=rotate(y,z,qt);
+        x,z=rotate(x,z,qt*1.5);
         -- x,y=inf(qt+p,x,y)
         -- y-=1
         add(vm,x);
@@ -525,9 +524,8 @@ function sort(seq)
     return seq
 end
 
-function draw_plasma(m)
-    -- memset(mem_part,0,0x2000)
-    local plasma=""
+function draw_plasmas(m,n,o,p,q,r)
+    local plasmas={"","","","","",""}
 	for x=0,31,1 do
 		for y=0,31,1 do
 			c=sub(tostr(((
@@ -536,15 +534,15 @@ function draw_plasma(m)
 				16+(16*sin(sqrt((x-63)%2*(x-63)%2+(y-63)%2*(y-63)%2)*0.016+sin(t*0.01)))+
 				16+(16*sin(sqrt(x*x+y*y)*0.004+sin(t*0.01)))
 			)*0.25+t)%6+m,true),6,6)
-            plasma=plasma..c
-            -- printh(c..c,"loggg.txt")
-			-- pset(x*2,y*2,(c+t)%6)
-            -- pset(x*2+1,y*2,(c+t)%6)
-			-- pset(x*2,y*2+1,(c+t)%6)
-            -- pset(x*2+1,y*2+1,(c+t)%6)
+            plasmas[1]=plasmas[1]..sub(tostr(c+m,true),6,6)
+            plasmas[2]=plasmas[2]..sub(tostr(c+n,true),6,6)
+            plasmas[3]=plasmas[3]..sub(tostr(c+o,true),6,6)
+            plasmas[4]=plasmas[4]..sub(tostr(c+p,true),6,6)
+            plasmas[5]=plasmas[5]..sub(tostr(c+q,true),6,6)
+            plasmas[6]=plasmas[6]..sub(tostr(c+r,true),6,6)
 		end
 	end
-    return plasma
+    return plasmas
 end
 
 function bridge2()
