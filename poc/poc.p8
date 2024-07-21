@@ -1,16 +1,18 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
--- texture='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55556665555555665555555665555677655556676eee6e77e6eee6776eee6eeee6eee676655556ee655556655555556655555556665555ee55556667776555ee55567777777655ee556777777776566665677776777656776567776'
+tex='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55556665555555665555555665555677655556676eee6e77e6eee6776eee6eeee6eee676655556ee655556655555556655555556665555ee55556667776555ee55567777777655ee556777777776566665677776777656776567776'
 t=0
--- texture="0"
--- function _init()
---     image=sub(tostr(@0,true),5,6)
---     for i=1,8191,1 do
---         image=image..sub(tostr(@i,true),5,6)
---     end
---     texture=image
--- end
+function _init()
+    -- tex=zoom_rotator_texture()
+end
+function zoom_rotator_texture()
+    local texture=sub(tostr(@0,true),5,6)
+    for i=1,8191,1 do
+        texture=texture..sub(tostr(@i,true),5,6)
+    end
+    return texture
+end
 function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture)
     if (y<0 or y>127) return
     local q,n
@@ -36,11 +38,11 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture
         uv_y=flr(uv_y*tex_size+0.5)
         texture_index=flr(uv_y *tex_size + uv_x+0.5)
         texture_index = max(0, min(tex_size*tex_size, texture_index))
-        local texture_color1 = sub(texture,texture_index,texture_index)
-        local color
+        -- local texture_color1 = sub(texture,texture_index,texture_index)
+        local texture_color1 = texture[texture_index]
+        local color="0x11"
         if(l_int>0.7)then color="0x"..texture_color1..texture_color1
         elseif(l_int<=0.7 and l_int>0.3)then color="0x1"..texture_color1
-        else color="0x11"
         end
         memset(0x6000 + y * 64 + x, color, 2)
     end
@@ -133,8 +135,7 @@ function translation(x,y,z,xT,yT,zT)
     return x+xT,y+yT,z+zT
 end
 
-function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
-    local textures=draw_plasmas()
+function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,calc_light,tex_size)
     for i=1,3*faces,3 do
         local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a=f[i];
@@ -169,6 +170,8 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
             l_cos=x/y
             l_int=max(0.1,l_cos)
         end
+        local tex_i=1
+        if #textures==6 then tex_i=flr(i/3)%6+1 end
         tric(
             vt[a*3+1],
             vt[a*3+2],
@@ -176,12 +179,12 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
             vt[b*3+2],
             vt[c*3+1],
             vt[c*3+2],
-            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,32,textures[flr(i/3%6)+1])
+            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,tex_size,textures[tex_i])
     end
 end
 function draw_cube(p)
 	local qt,s;
-    s=1.5
+    s=0.35
 	qt=t*0.01;
     local vertices=8
 	local v={
@@ -238,8 +241,8 @@ function draw_cube(p)
         z=v[j+2];
         y,z=rotate(y,z,qt);
         x,z=rotate(x,z,qt*1.5);
-        -- x,y=inf(qt+p,x,y)
-        -- y-=1
+        x,y=inf(qt+p,x,y)
+        y-=1
         add(vm,x);
         add(vm,y);
         add(vm,z);
@@ -250,7 +253,7 @@ function draw_cube(p)
         vt[j+1]=flr(y);
         vt[j+2]=flr(z);
     end
-	draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,false,128)
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{tex},false,16)
 end
 
 function draw_torus(p)
@@ -324,7 +327,7 @@ function draw_torus(p)
             add(v_r,vt[j])
             add(vm_r,vm[j])
         end
-	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,texture,true,16)
+	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,{tex},true,16)
     end
 end
 
@@ -377,22 +380,14 @@ function zoom_rotator(p)
             add(v_r,vt[j])
             add(vm_r,vm[j])
         end
-	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,texture,false,128)
+	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,{tex},false,128)
     end
 end
 
 function draw_cube_anim(p)
-    local texture1="111111111"
-    local texture2="222222222"
-    local texture3="333333333"
-    -- for i=1,8191,1 do
-    --     texture1=texture1..sub(tostr(0x8000+@i,true),5,6)
-    --     texture2=texture2..sub(tostr(0xa000+@i,true),5,6)
-    --     texture3=texture3..sub(tostr(0xc000+@i,true),5,6)
-    -- end
-    local textures={texture1,texture2,texture3}
-    local qt,s;
-    s=0.35
+    local textures=draw_plasmas()
+	local qt,s;
+    s=1.5
 	qt=t*0.01;
     local vertices=8
 	local v={
@@ -447,10 +442,10 @@ function draw_cube_anim(p)
         x=v[j];
         y=v[j+1];
         z=v[j+2];
-        y,z=rotate(y,z,qt*0.9);
-        x,z=rotate(x,z,qt*0.3);
-        x,y=inf(qt+p,x,y)
-        y-=1
+        y,z=rotate(y,z,qt);
+        x,z=rotate(x,z,qt*1.5);
+        -- x,y=inf(qt+p,x,y)
+        -- y-=1
         add(vm,x);
         add(vm,y);
         add(vm,z);
@@ -461,6 +456,7 @@ function draw_cube_anim(p)
         vt[j+1]=flr(y);
         vt[j+2]=flr(z);
     end
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,false,32)
 end
 
 function v3_len(vec)
@@ -495,15 +491,12 @@ end
 
 function _draw()
     cls()
-    -- draw_plasma(0x6000,0)
-    -- draw_plasma(0x8000,0)
-    -- memcpy(0x6000,0x8000,0x2000)
-    -- draw_plasma(0xa000)
-    -- draw_plasma(0xc000)
     -- background()
     -- zoom_rotator(0)
+    draw_cube_anim(0)
     -- mirror()
-     draw_cube(0)
+    -- bridge1()
+    -- bridge2()
 end
 
 function sort(seq)

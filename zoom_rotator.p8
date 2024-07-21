@@ -40,7 +40,8 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size)
         uv_y=flr(uv_y*tex_size+0.5)
         texture_index=flr(uv_y *tex_size + uv_x+0.5)
         texture_index = max(0, min(tex_size*tex_size, texture_index))
-        local texture_color1 = sub(texture,texture_index,texture_index)
+        -- local texture_color1 = sub(texture,texture_index,texture_index)
+        local texture_color1=texture[texture_index]
         local color
         if(l_int>0.7)then color="0x"..texture_color1..texture_color1
         elseif(l_int<=0.7 and l_int>0.3)then color="0x1"..texture_color1
