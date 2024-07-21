@@ -153,6 +153,22 @@ function _update()
 			pal(6,134,1)
 			pal(12,140,1)
 		end
+		if(mp==117)then
+			reload(0x0000,0x0000,0x2000,"rasterizer.p8")
+			tex=zoom_rotator_texture()
+		end 
+		if(mp==118) then 
+			t=0 
+			memset(0x6000,0,0x2000)
+			pal()
+		end
+		if(mp==120)then
+			t=0
+			memset(0x6000,0,0x2000)
+		end
+		if(mp==124)then
+			t=0
+		end
 	end
 	p_elapsed=elapsed
 	if(mp==23 and t==64)then
@@ -178,10 +194,9 @@ function _draw()
 	elseif(mp<144)then
 		autumn()
 	elseif(mp<160)then
-		bridge3()
+		draw_cube_anim()
 	elseif(mp<192)then
 		winter()
-	else
 	end
 	--print(@0xc000,0,50,7)
 	--spr(0,0,0,16,16)
@@ -189,9 +204,6 @@ function _draw()
 	-- print(t,0,80,1)
 end
 --placeholders
-function bridge3()
-	print("bridge3",64,64,10)
-end
 function winter()
 	print("winter",64,64,10)
 end

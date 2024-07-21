@@ -2,10 +2,10 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 tex='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55556665555555665555555665555677655556676eee6e77e6eee6776eee6eeee6eee676655556ee655556655555556655555556665555ee55556667776555ee55567777777655ee556777777776566665677776777656776567776'
-t=0
-function _init()
-    -- tex=zoom_rotator_texture()
-end
+-- t=0
+-- function _init()
+--     -- tex=zoom_rotator_texture()
+-- end
 function zoom_rotator_texture()
     local texture=sub(tostr(@0,true),5,6)
     for i=1,8191,1 do
@@ -253,7 +253,7 @@ function draw_cube(p)
         vt[j+1]=flr(y);
         vt[j+2]=flr(z);
     end
-    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{tex},false,16)
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{tex},true,16)
 end
 
 function draw_torus(p)
@@ -485,19 +485,19 @@ function mirror()
     end
 end
 
-function _update()
-    t+=1
-end
+-- function _update()
+--     t+=1
+-- end
 
-function _draw()
-    cls()
+-- function _draw()
+    -- cls()
     -- background()
     -- zoom_rotator(0)
-    draw_cube_anim(0)
+    -- draw_cube_anim(0)
     -- mirror()
     -- bridge1()
     -- bridge2()
-end
+-- end
 
 function sort(seq)
     for i=1,#seq,2 do

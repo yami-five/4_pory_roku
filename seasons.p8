@@ -162,11 +162,18 @@ function birds()
 end
 
 function autumn()
-    if(mp<124)then
-        memcpy(0x6000,0x8000,0x2000)
-    end
+    local texture
     if(mp<118)then
+        memcpy(0x6000,0x8000,0x2000)
         inverted_leaves()
+    elseif(mp<119)then
+        spr(0,0,-128+t*4,16,16)
+    elseif(mp<120)then
+        spr(0,0,0,16,16)
+    elseif(mp==120 and t<5)then
+        memset(0x6000,0x77,0x2000)
+    else
+        zoom_rotator(0,texture)
     end
 end
 
