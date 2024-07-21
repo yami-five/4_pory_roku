@@ -134,7 +134,7 @@ function translation(x,y,z,xT,yT,zT)
 end
 
 function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,calc_light,tex_size)
-    local textures=draw_plasmas(0,2,4,6,8,10)
+    local textures=draw_plasmas()
     for i=1,3*faces,3 do
         local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a=f[i];
@@ -524,7 +524,7 @@ function sort(seq)
     return seq
 end
 
-function draw_plasmas(m,n,o,p,q,r)
+function draw_plasmas()
     local plasmas={"","","","","",""}
 	for x=0,31,1 do
 		for y=0,31,1 do
@@ -533,13 +533,10 @@ function draw_plasmas(m,n,o,p,q,r)
 				16+(16*sin(y*0.008+sin(t*0.001)))+
 				16+(16*sin(sqrt((x-63)%2*(x-63)%2+(y-63)%2*(y-63)%2)*0.016+sin(t*0.01)))+
 				16+(16*sin(sqrt(x*x+y*y)*0.004+sin(t*0.01)))
-			)*0.25+t)%6+m,true),6,6)
-            plasmas[1]=plasmas[1]..sub(tostr(c+m,true),6,6)
-            plasmas[2]=plasmas[2]..sub(tostr(c+n,true),6,6)
-            plasmas[3]=plasmas[3]..sub(tostr(c+o,true),6,6)
-            plasmas[4]=plasmas[4]..sub(tostr(c+p,true),6,6)
-            plasmas[5]=plasmas[5]..sub(tostr(c+q,true),6,6)
-            plasmas[6]=plasmas[6]..sub(tostr(c+r,true),6,6)
+			)*0.25+t)%6,true),6,6)
+            for i=1,6,1 do
+                plasmas[i]=plasmas[i]..sub(tostr(c+((i-1)*2),true),6,6)    
+            end
 		end
 	end
     return plasmas
