@@ -3,27 +3,20 @@ version 42
 __lua__
 
 
-w=64
-h=48
-t=0
-fire={}
-p="0,0,8,9,10,7,7,7,7,7,7,7,7,7,7,7"
-r="0,0,2,8,9,6,6,6,6,6,6,6,6,6,6,6"
-
+w,h,fire=64,64,{}
+hh=h*h
 
 function _init()
-	for x=1,w,1 do
-		add(fire,{})
-		for y=1,h,1 do
-			add(fire[x],0)
-		end
+	for i=1,hh do
+		fire[i]=0 
 	end
-	p=split(p)
-	r=split(r)
-end
-
-function _update()
- //t+=1
+	pal(1,8,1)
+	pal(2,137,1)
+	pal(3,9,1)
+	pal(4,10,1)
+	pal(5,135,1)
+	pal(6,7,1)
+	pal(8,7,1)
 end
 
 function _draw()
@@ -31,32 +24,31 @@ function _draw()
 	draw_fire()
 end
 
+
+
 function draw_fire()
-	for x=1,w,1 do 
-		fire[x][h] = abs(32768+rnd(128))%16
+	for x=1,w do
+		fire[h*(h-1)+x]=rnd(128)%16
 	end
-	for x=1,w,1 do	
-		for y=1,h,1 do
-			fire[x][y]=
-				(fire[(x+w)%w+1][(y+1)%h+1]
-				+fire[x%w+1][(y+1)%h+1]
-				+fire[(x+1)%w+1][(y+1)%h+1]
-				+fire[x%w+1][(y+2)%h+1])/4.2
+	for y=0,h-1 do
+		for x=1,w do
+			local yh1=(y*h+1)
+			local yhmodhh,hmodw=(yh1+h)%hh,x%w
+			fire[yh1+x]=
+				((fire[yhmodhh+(x+w)%w]
+				+fire[((yh1+h*2)%hh)+hmodw]
+				+fire[yhmodhh+(x+1)%w]
+				+fire[((yh1+h*3)%hh)+hmodw])/4.2)%8
 		end
 	end
-	for x=1,w,1 do
-		for y=1,h,1 do
-			pset(2*x-1,2*y-1,p[flr(fire[x][y]+.5)])
-			pset(2*x-1,2*y,p[flr(fire[x][y]+.5)])
-			pset(2*x,2*y-1,p[flr(fire[x][y]+.5)])
-			pset(2*x,2*y,p[flr(fire[x][y]+1.5)])
+	for y=1,h do
+		for x=1,w*2,2 do
+		local yhx=y*h+x
+			pset(x,y,fire[yhx])
+			pset(x+1,y,fire[yhx])
+			if(y%4==0)then
+				pset(x,96-(y/2),fire[yhx])
+			end
 		end
 	end
-	-- for y=20,h,1 do
-	-- 	for x=1,w,1 do
-	-- 		pset(2*x-1,140-y,r[flr(fire[x][y]+1.5)])
-	-- 		pset(2*x,140-y,r[flr(fire[x][y]+1.5)])
-	-- 	end
-	-- end
-	line(0,127,127,127,0)
 end

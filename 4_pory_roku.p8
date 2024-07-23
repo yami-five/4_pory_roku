@@ -154,9 +154,9 @@ function _update()
 			t=0
 			memset(0x6000,0,0x2000)
 		end
-		if(mp==124)then
-			t=0
-		end
+		-- if(mp==124)then
+		-- 	t=0
+		-- end
 	end
 	p_elapsed=elapsed
 	if(mp==23 and t==64)then

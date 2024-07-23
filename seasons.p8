@@ -168,9 +168,9 @@ function autumn()
         inverted_leaves()
     elseif(mp<119)then
         spr(0,0,-128+t*4,16,16)
-    elseif(mp<120)then
+    elseif(mp<121)then
         spr(0,0,0,16,16)
-    elseif(mp==120 and t<5)then
+    elseif(mp==121 and t<5)then
         memset(0x6000,0x77,0x2000)
     else
         zoom_rotator(0,texture)

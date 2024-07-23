@@ -5,9 +5,11 @@ lens_size=40
 lens_r=20
 lens_zoom=8
 lens={}
-x=0
-y=0
+x=64
+y=-10
 t=0
+ym=1
+xm=1
 function _init()
 	local ls=lens_r
 	local d=lens_zoom
@@ -68,25 +70,37 @@ function draw_lens(lens_x,lens_y)
 	for y=-lens_r,lens_r do
 		for x=-lens_r,lens_r do
 			if(buf[(y+lens_r)*lens_size+x+lens_r]!=nil)then
-				pset(x+lens_x,y+lens_y,buf[(y+lens_r)*lens_size+x+lens_r])
-	
+				if((x+y)%4!=0)then
+					pset(x+lens_x,y+lens_y,buf[(y+lens_r)*lens_size+x+lens_r])
+				else
+					pset(x+lens_x,y+lens_y,1)
+				end
 			end
 		end
 	end
-	-- circ(lens_x+t,lens_y+t,22,12)
+	circ(lens_x,lens_y,20,1)
+	circfill(lens_x+14,lens_y-4,3,7)
+	circfill(lens_x+10,lens_y-10,2,14)
 end
 
--- function _update()
--- 	t+=1
--- end
+function _update()
+	t+=1
+end
 
--- function _draw()
--- 	cls()
--- 	spr(0,0,0,16,16)
--- 	-- x+=2*(cos(t))
--- 	-- y+=2*cos(t)*sin(t)
--- 	draw_lens(x+t,y+t)
--- end
+function _draw()
+	cls()
+	spr(0,0,0,16,16)
+	print(y,0,0,7)
+	if(t<120)then 
+		y+=1 
+		x+=0.1
+	end
+	if(t>120 and t<163)then 
+		y-=1 
+		x+=0.75
+	end
+	draw_lens(x,y)
+end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
