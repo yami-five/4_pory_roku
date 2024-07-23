@@ -20,12 +20,12 @@ function _init()
 			if(x2+y2<r2)then
 				local shift = d/sqrt(d*d-(x2+y2-r2))
 				ix = flr(x * (shift-1)+0.5)
-				-- iy = y * (shift-1)
+				iy = y * (shift-1)
 				-- lens[(ls+y)*lens_size+(ls+x)]= ix
-				lens[(ls-y)*lens_size+(ls-x)]=ix --left up
-				lens[(ls+y)*lens_size+(ls+x)]=-ix --right down
-				lens[(ls+y)*lens_size+(ls-x)]=ix -- left down
-				lens[(ls-y)*lens_size+(ls+x)]=-ix -- right up
+				lens[(ls-y)*lens_size+(ls-x)]={ix,-iy} --left up
+				lens[(ls+y)*lens_size+(ls+x)]={-ix,iy} --right down
+				lens[(ls+y)*lens_size+(ls-x)]={ix,iy} -- left down
+				lens[(ls-y)*lens_size+(ls+x)]={-ix,-iy} -- right up
 				-- offset = iy + ix
 				-- lens[(ls-y)*lens_size+(ls-x)]= -flr(offset+0.5) --left up
 				-- lens[(ls+y)*lens_size+(ls+x)]= flr(offset+0.5) --right down
@@ -40,13 +40,13 @@ function _init()
 			end
 		end
 	end
-	for y=0,lens_size do
-		line=tostr(y).." - "
-		for x=0,lens_size do
-			line=line..tostr(lens[y*lens_size+x]).." "
-		end
-		printh(line,"loggg.txt")
-	end
+	-- for y=0,lens_size do
+	-- 	line=tostr(y).." - "
+	-- 	for x=0,lens_size do
+	-- 		line=line..tostr(lens[y*lens_size+x]).." "
+	-- 	end
+	-- 	printh(line,"loggg.txt")
+	-- end
 end
 
 function draw_lens(lens_x,lens_y)
@@ -57,7 +57,7 @@ function draw_lens(lens_x,lens_y)
 			local off = lens[(y+lens_r)*lens_size+x+lens_r]
 			if(off!=32767)then
 				-- printh(tostr(off).." "..tostr(x),"loggg.txt")
-				col=pget(lens_x+off,lens_y+y)
+				col=pget(lens_x+off[1],lens_y+y+off[2])
 				-- line=line.."("..tostr(x+lens_x+off)..","..tostr(y+lens_y)..") "
 				-- pset(x+lens_x,y+lens_y,col)
 				buf[(y+lens_r)*lens_size+x+lens_r]=col
