@@ -7,8 +7,8 @@ tex='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55
 --     -- tex=zoom_rotator_texture()
 -- end
 function zoom_rotator_texture()
-    local texture=sub(tostr(@0,true),5,6)
-    for i=1,8191,1 do
+    local texture=""
+    for i=0,8192,1 do
         texture=texture..sub(tostr(@i,true),5,6)
     end
     return texture
@@ -125,15 +125,15 @@ function rotate(x,y,a)
     return c*x-s*y, s*x+c*y
 end
 
-function rotate2(x,y,a)
-    local xP=2 yP=1 
-    local c=cos(a) s=sin(a)
-    return c*(x-xP)-s*(y-yP)+xP, s*(x-xP)+c*(y-yP)+yP
-end
+-- function rotate2(x,y,a)
+--     local xP=2 yP=1 
+--     local c=cos(a) s=sin(a)
+--     return c*(x-xP)-s*(y-yP)+xP, s*(x-xP)+c*(y-yP)+yP
+-- end
 
-function translation(x,y,z,xT,yT,zT)
-    return x+xT,y+yT,z+zT
-end
+-- function translation(x,y,z,xT,yT,zT)
+--     return x+xT,y+yT,z+zT
+-- end
 
 function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,calc_light,tex_size)
     for i=1,3*faces,3 do
@@ -521,14 +521,14 @@ function draw_plasmas()
     local plasmas={"","","","","",""}
 	for x=0,31,1 do
 		for y=0,31,1 do
-			c=sub(tostr(((
+			c=tostr(((
 				16+(16*sin(x*0.016+sin(t*0.001)))+
 				16+(16*sin(y*0.008+sin(t*0.001)))+
 				16+(16*sin(sqrt((x-63)%2*(x-63)%2+(y-63)%2*(y-63)%2)*0.016+sin(t*0.01)))+
 				16+(16*sin(sqrt(x*x+y*y)*0.004+sin(t*0.01)))
-			)*0.25+t)%6,true),6,6)
+			)*0.25+t)%6,true)[6]
             for i=1,6,1 do
-                plasmas[i]=plasmas[i]..sub(tostr(c+((i-1)*2),true),6,6)    
+                plasmas[i]=plasmas[i]..tostr(c+((i-1)*2),true)[6]  
             end
 		end
 	end

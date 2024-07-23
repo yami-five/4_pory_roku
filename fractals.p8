@@ -71,7 +71,7 @@ end
 
 function hex(value)
 	result=tostr(value,true)
-	result=sub(result,6,6)
+	result=result[6]
 	return result
 end
 __gfx__

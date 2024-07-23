@@ -20,7 +20,7 @@ function _init()
 			if(x2+y2<r2)then
 				local shift = d/sqrt(d*d-(x2+y2-r2))
 				ix = flr(x * (shift-1)+0.5)
-				iy = y * (shift-1)
+				iy = flr(y * (shift-1)+0.5)
 				-- lens[(ls+y)*lens_size+(ls+x)]= ix
 				lens[(ls-y)*lens_size+(ls-x)]={ix,-iy} --left up
 				lens[(ls+y)*lens_size+(ls+x)]={-ix,iy} --right down
@@ -76,17 +76,17 @@ function draw_lens(lens_x,lens_y)
 	-- circ(lens_x+t,lens_y+t,22,12)
 end
 
-function _update()
-	t+=1
-end
+-- function _update()
+-- 	t+=1
+-- end
 
-function _draw()
-	cls()
-	spr(0,0,0,16,16)
-	-- x+=2*(cos(t))
-	-- y+=2*cos(t)*sin(t)
-	draw_lens(x+t,y+t)
-end
+-- function _draw()
+-- 	cls()
+-- 	spr(0,0,0,16,16)
+-- 	-- x+=2*(cos(t))
+-- 	-- y+=2*cos(t)*sin(t)
+-- 	draw_lens(x+t,y+t)
+-- end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -19,16 +19,16 @@ end
 
 function decompress_picture(img)
 	local decompressed=''
-	local cur_char=sub(img,1,1)
-	local counter=sub(img,2,2)
+	local cur_char=img[1]
+	local counter=img[2]
 	for i=3,#img,1 do
-		if(tonum(sub(img,i,i))!=nil) then counter=counter..sub(img,i,i)
+		if(tonum(img[i])!=nil) then counter=counter..img[i]
 		else
 			cur_char=letter_to_num(cur_char)
 			for j=1,counter,1 do
 				decompressed=decompressed..cur_char
 			end
-			cur_char=sub(img,i,i)
+			cur_char=img[i]
 			counter=''
 		end
 	end
@@ -41,15 +41,15 @@ end
 
 function load_gfx(img, addr)
 	for i=1,16384,2 do
-		poke(addr+(i-1)/2,"0x"..sub(img,i,i+1))
+		poke(addr+(i-1)/2,"0x"..img[i]..img[i+1])
 	end
 end
 
-function load_sprites(img)
-	for i=1,16384,2 do
-		poke((i-1)/2,"0x"..sub(img,i,i+1))
-	end
-end
+-- function load_sprites(img)
+-- 	for i=1,16384,2 do
+-- 		poke((i-1)/2,"0x"..img[i]..img[i+1])
+-- 	end
+-- end
 
 -- function fade_out(factor,color)
 -- 	fillp(fade[flr(t*factor)])

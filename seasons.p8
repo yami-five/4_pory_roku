@@ -45,12 +45,12 @@ function draw_plasma()
 	end
 end
 
-function hex(value)
-	result=tostr(value,true)
-	result=sub(result,6,6)
-    -- printh(result,"loggg.txt")
-	return result
-end
+-- function hex(value)
+-- 	result=tostr(value,true)
+-- 	result=sub(result,6,6)
+--     -- printh(result,"loggg.txt")
+-- 	return result
+-- end
 
 function scroller()
     for i=1,128,1 do
