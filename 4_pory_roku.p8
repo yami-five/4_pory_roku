@@ -8,13 +8,7 @@ __lua__
 #include rasterizer.p8
 #include fractals.p8
 
-t=0
-delays = {}
-melted = 0
-mp=0
-p_elapsed=0
-rings=0
-bees = {}
+t,delays,melted,mp,p_elapsed,rings,bees=0,{},0,0,0,0,{}
 function _init()
 	music(0)
 	load_font()
@@ -34,8 +28,7 @@ function _update()
 		if(mp==4 or mp==12)then t=0 end
 		if(mp==10)then
 			gen_delays() 
-			melted=0
-			t=0
+			melted,t=0,0
 			px9_decomp(0,0,0xc000,sget,sset)
 		end
 		if(mp==16)then
@@ -63,8 +56,7 @@ function _update()
 			memcpy(0xc000,0x0000,0x2000)
 			px9_decomp(0,0,0xe000,sget,sset) 
 			memcpy(0x8000,0x0000,0x2000)
-			img1=0x8000
-			img2=0xa000
+			img1,img2=0x8000,0xa000
 		end
 		if(mp==26)then
 			t=0
@@ -116,11 +108,7 @@ function _update()
 			pal()
 		end
 		if(mp==86)then
-			t=0
-			cx=0
-			cy=0.75
-			s=2
-			x=0
+			t,cx,cy,s,x=0,0,0.75,2,0
 		end
 
 		if(mp==96)then
@@ -172,9 +160,7 @@ function _update()
 	end
 	p_elapsed=elapsed
 	if(mp==23 and t==64)then
-		t=0
-		img1=img2
-		img2=0xc000
+		t,img1,img2=0,img2,0xc000
 	end
 
 end
