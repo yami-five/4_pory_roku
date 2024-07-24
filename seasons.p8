@@ -11,18 +11,21 @@ function spring()
         if(mp>27)then
             leaves()
         end
-    elseif(mp<52)then
+    elseif(mp<44)then
         if(t>200 and rings>=0)then rings-=1 
         elseif(rings<30 and t>10)then rings+=1 end
         if(rings>=30 or t>200)then cls(flr(t*0.5)%7+8)
         else cls()
         end
-        if(t>200 and rings<1)then draw_plasma() end
         for i=rings,1,-1 do
             local sx = cos(7+t*0.01)
             local sy = sin(7+t*0.01)*cos(7+t*0.01)
             poke(0x5f34,0x2)
             circfill(64+sx*i,64+sy*i,200/i,flr(t*0.33+i)%7+8 | 0x1800)
+        end
+    elseif(mp>=44) then draw_plasma()
+        if(mp<46)then 
+            circfill(64,64,t*3,0 | 0x1800) 
         end
     end
 end
@@ -31,7 +34,7 @@ function draw_plasma()
 	for x=0,63,1 do
 		for y=0,63,1 do
 			c=(
-				16+(16*sin(x*0.016+sin(t*0.01)))+
+				16+(16*sin(x*0.016+sin(t*0.0)))+
 				16+(16*sin(y*0.008+sin(t*0.01)))+
 				16+(16*sin(sqrt((x-63)%2*(x-63)%2+(y-63)%2*(y-63)%2)*0.016+sin(t*0.01)))+
 				16+(16*sin(sqrt(x*x+y*y)*0.004+sin(t*0.01)))

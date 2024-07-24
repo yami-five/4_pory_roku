@@ -78,6 +78,7 @@ function _update()
 			pal()
 			fillp()
 		end
+		if(mp==44) then t=0 end
 		if(mp==52)then
 			t=0
 			memcpy(0xa000,0x0000,0x2000)
