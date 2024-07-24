@@ -1,15 +1,18 @@
-pico-8 cartridge // http://www.pico-8.com
+pico-8 cartridge // http then//www.pico-8.com
 version 42
 __lua__
 lens_size=40
 lens_r=20
 lens_zoom=8
 lens={}
-x=64
-y=-10
+lens_x=64
+lens_y=-50
+x_speed=2
+y_speed=0
+g=0.1
+b=1
+damping=0.99
 t=0
-ym=1
-xm=1
 function _init()
 	local ls=lens_r
 	local d=lens_zoom
@@ -23,17 +26,10 @@ function _init()
 				local shift = d/sqrt(d*d-(x2+y2-r2))
 				ix = flr(x * (shift-1)+0.5)
 				iy = flr(y * (shift-1)+0.5)
-				-- lens[(ls+y)*lens_size+(ls+x)]= ix
 				lens[(ls-y)*lens_size+(ls-x)]={ix,-iy} --left up
 				lens[(ls+y)*lens_size+(ls+x)]={-ix,iy} --right down
 				lens[(ls+y)*lens_size+(ls-x)]={ix,iy} -- left down
 				lens[(ls-y)*lens_size+(ls+x)]={-ix,-iy} -- right up
-				-- offset = iy + ix
-				-- lens[(ls-y)*lens_size+(ls-x)]= -flr(offset+0.5) --left up
-				-- lens[(ls+y)*lens_size+(ls+x)]= flr(offset+0.5) --right down
-				-- offset = -iy + ix
-				-- lens[(ls+y)*lens_size+(ls-x)]= -flr(offset+0.5) -- left down
-				-- lens[(ls-y)*lens_size+(ls+x)]= flr(offset+0.5) -- right up
 			else
 				lens[(ls-y)*lens_size+(ls+x)]=32767
 				lens[(ls+y)*lens_size+(ls+x)]=32767
@@ -42,30 +38,18 @@ function _init()
 			end
 		end
 	end
-	-- for y=0,lens_size do
-	-- 	line=tostr(y).." - "
-	-- 	for x=0,lens_size do
-	-- 		line=line..tostr(lens[y*lens_size+x]).." "
-	-- 	end
-	-- 	printh(line,"loggg.txt")
-	-- end
 end
 
 function draw_lens(lens_x,lens_y)
 	local buf={}
 	for y=-lens_r,lens_r do
-		-- line=tostr(y).." - "
 		for x=-lens_r,lens_r do
 			local off = lens[(y+lens_r)*lens_size+x+lens_r]
 			if(off!=32767)then
-				-- printh(tostr(off).." "..tostr(x),"loggg.txt")
 				col=pget(lens_x+off[1],lens_y+y+off[2])
-				-- line=line.."("..tostr(x+lens_x+off)..","..tostr(y+lens_y)..") "
-				-- pset(x+lens_x,y+lens_y,col)
 				buf[(y+lens_r)*lens_size+x+lens_r]=col
 			end
 		end
-		-- printh(line,"loggg.txt")
 	end
 	for y=-lens_r,lens_r do
 		for x=-lens_r,lens_r do
@@ -85,21 +69,47 @@ end
 
 function _update()
 	t+=1
+	y_speed += g
+    lens_x += x_speed
+    lens_y += y_speed
+
+	if lens_y + lens_r > 127 then
+        lens_y = 127 - lens_r
+        y_speed = -y_speed * b
+        x_speed *= damping
+        y_speed *= damping
+	end
+    -- if lens_y - lens_r < 0 then
+    --     lens_y = lens_r
+    --     y_speed = -y_speed * b
+    --     x_speed *= damping
+    --     y_speed *= damping
+	-- end
+    if lens_x - lens_r < 0 then
+        lens_x = lens_r
+        x_speed = -x_speed * b
+        x_speed *= damping
+        y_speed *= damping
+	end
+    if lens_x + lens_r > 127 then
+        lens_x = 127 - lens_r
+        x_speed = -x_speed * b
+        x_speed *= damping
+        y_speed *= damping
+	end
+
+    x_speed *= damping
+    y_speed *= damping
+
+    if abs(x_speed) < 0.01 then x_speed = 0 end
+    if abs(y_speed) < 0.01 then y_speed = 0 end
 end
 
 function _draw()
 	cls()
 	spr(0,0,0,16,16)
-	print(y,0,0,7)
-	if(t<120)then 
-		y+=1 
-		x+=0.1
-	end
-	if(t>120 and t<163)then 
-		y-=1 
-		x+=0.75
-	end
-	draw_lens(x,y)
+
+	draw_lens(lens_x,lens_y)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
