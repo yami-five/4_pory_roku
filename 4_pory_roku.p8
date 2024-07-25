@@ -9,7 +9,6 @@ __lua__
 #include fractals.p8
 #include lens.p8
 
--- t,delays,melted,mp,p_elapsed,rings,bees=0,{},0,0,0,0,{}
 t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99
 function _init()
 	music(0)
@@ -45,13 +44,7 @@ function _update()
 				add(bees,rnd(128)-560)
 			end
 			t=0
-			pal(2,132,1)
-			pal(7,140,1)
-			pal(8,128,1)
-			pal(11,138,1)
-			pal(13,14,1)
-			pal(14,139,1)
-			pal(15,134,1)
+			change_palette(split("0,1,132,3,4,5,6,140,128,9,10,138,12,14,139,134"))
 			px9_decomp(0,0,0xe600,sget,sset) 
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xeb00,sget,sset) 
@@ -84,27 +77,14 @@ function _update()
 		if(mp==52)then
 			t=0
 			memcpy(0xa000,0x0000,0x2000)
-			px9_decomp(0,0,0xf500,sget,sset) 
-			pal(8,139,1)
-			pal(15,141,1)
-			pal(6,139,1)
-			pal(5,2,1)
-			pal(7,11,1)
+			px9_decomp(0,0,0xf500,sget,sset)
+			change_palette(split("0,1,2,3,4,2,139,11,139,9,10,11,12,13,14,141"))
 		end
 		if(mp==64)then
 			t=0
 			pal()
 			memcpy(0x0000,0xa000,0x2000)
-			pal(2,132,1)
-			pal(7,140,1)
-			pal(10,7,1)
-			pal(11,138,1)
-			pal(13,12,1)
-			pal(14,11,1)
-			pal(15,9,1)
-			pal(9,135,1)
-			pal(3,139,1)
-			pal(6,134,1)
+			change_palette(split("0,1,132,139,4,5,134,140,8,135,7,138,12,12,11,9"))
 		end
 		if(mp==76)then
 			t=0
@@ -118,31 +98,13 @@ function _update()
 			t=0
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xf500,sget,sset)
-			pal(8,139,1)
-			pal(15,140,1)
-			pal(6,139,1)
-			pal(5,2,1)
-			pal(7,11,1)
-			pal(13,135,1)
-			pal(14,137,1)
-			pal(10,136,1)
-			pal(2,10,1)
+			change_palette(split("0,1,10,3,4,2,139,11,139,9,136,11,12,135,137,140"))
 		end
 		if(mp==112)then
 			t=0
 			pal()
 			memcpy(0x0000,0xa000,0x2000)
-			pal(2,132,1)
-			pal(7,1,1)
-			pal(10,9,1)
-			pal(11,138,1)
-			pal(13,9,1)
-			pal(14,137,1)
-			pal(15,9,1)
-			pal(15,4,1)
-			pal(3,4,1)
-			pal(6,134,1)
-			pal(12,140,1)
+			change_palette(split("0,1,132,4,4,5,134,1,8,9,9,138,140,9,137,4"))
 		end
 		if(mp==117)then
 			reload(0x0000,0x0000,0x2000,"rasterizer.p8")
@@ -161,10 +123,12 @@ function _update()
 		if(mp==121)then
 			t=0
 		end
-		if(mp==131)then t=0 end
-		-- if(mp==124)then
-		-- 	t=0
-		-- end
+		if(mp==132)then t=0 end
+		
+		if(mp==160)then
+			t=0
+			change_palette(split("0,129,129,1,140,129,1,129,5,140,140,7,1,140,12,129"))
+		end
 	end
 	p_elapsed=elapsed
 	if(mp==23 and t==64)then
@@ -198,9 +162,6 @@ function _draw()
 	-- print(t,0,80,1)
 end
 --placeholders
-function winter()
-	print("winter",64,64,10)
-end
 __gfx__
 __sfx__
 410c00000e55010550115501154011530115200e5500e55010550105201055011550135501155010550105200e55010550115501154011530115200e5500e5500c5500c5200c5500e550105500e5500c5500c520

@@ -2,6 +2,12 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+function change_palette(palette)
+	for i=1,16 do
+		pal(i-1,palette[i],1)
+	end
+end
+
 function letter_to_num(char)
     if(char=='g') then return '0'
 	elseif(char=='h')then return '1'

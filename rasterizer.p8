@@ -303,14 +303,14 @@ function mirror()
     end
 end
 
-function _update()
-    t+=1
-end
+-- function _update()
+--     t+=1
+-- end
 
-function _draw()
-    cls()
-    draw_chicken()
-end
+-- function _draw()
+--     cls()
+--     draw_chicken()
+-- end
 
 function draw_chicken(p)
 	local qt,vertices,faces,vt,vm=t*0.01,82,162,{},{}

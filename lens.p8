@@ -1,8 +1,11 @@
 pico-8 cartridge // http then//www.pico-8.com
 version 42
 __lua__
--- lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping=40,20,8,{},64,-50,4,0,0.2,1,0.99
--- t=0
+lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping=40,20,8,{},64,-50,4,0,0.2,1,0.99
+t=0
+-- function _init()
+-- 	init_lens()
+-- end
 function init_lens()
 	local ls,d,r2=lens_r,lens_zoom,lens_r*lens_r
 	for y=0,ls,1 do
@@ -36,20 +39,14 @@ function update_lens()
 		if lens_y+lens_r>127 then
 			lens_y=127-lens_r
 			y_speed=-y_speed*b
-			x_speed*=damping
-			y_speed*=damping
 		end
 		if lens_x-lens_r<0 then
 			lens_x=lens_r
 			x_speed=-x_speed*b
-			x_speed*=damping
-			y_speed*=damping
 		end
 		if lens_x+lens_r>127 then
 			lens_x=127-lens_r
 			x_speed=-x_speed*b
-			x_speed*=damping
-			y_speed*=damping
 		end
 		x_speed*=damping
 		y_speed*=damping
