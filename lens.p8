@@ -1,27 +1,14 @@
 pico-8 cartridge // http then//www.pico-8.com
 version 42
 __lua__
-lens_size=40
-lens_r=20
-lens_zoom=8
-lens={}
-lens_x=64
-lens_y=-50
-x_speed=2
-y_speed=0
-g=0.1
-b=1
-damping=0.99
-t=0
-function _init()
-	local ls=lens_r
-	local d=lens_zoom
-	local x2, y2
-	local r2=lens_r*lens_r
+-- lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping=40,20,8,{},64,-50,4,0,0.2,1,0.99
+-- t=0
+function init_lens()
+	local ls,d,r2=lens_r,lens_zoom,lens_r*lens_r
 	for y=0,ls,1 do
-		y2=y*y
+		local y2=y*y
 		for x=0,ls,1 do
-			x2=x*x
+			local x2=x*x
 			if(x2+y2<r2)then
 				local shift = d/sqrt(d*d-(x2+y2-r2))
 				ix = flr(x * (shift-1)+0.5)
@@ -37,6 +24,37 @@ function _init()
 				lens[(ls+y)*lens_size+(ls-x)]=32767
 			end
 		end
+	end
+end
+
+function update_lens()
+	if t>450 then lens_y+=1
+	else
+		y_speed+=g
+		lens_x+=x_speed
+		lens_y+=y_speed
+		if lens_y+lens_r>127 then
+			lens_y=127-lens_r
+			y_speed=-y_speed*b
+			x_speed*=damping
+			y_speed*=damping
+		end
+		if lens_x-lens_r<0 then
+			lens_x=lens_r
+			x_speed=-x_speed*b
+			x_speed*=damping
+			y_speed*=damping
+		end
+		if lens_x+lens_r>127 then
+			lens_x=127-lens_r
+			x_speed=-x_speed*b
+			x_speed*=damping
+			y_speed*=damping
+		end
+		x_speed*=damping
+		y_speed*=damping
+		if abs(x_speed)<0.01 then x_speed=0 end
+		if abs(y_speed)<0.01 then y_speed=0 end
 	end
 end
 
@@ -67,50 +85,17 @@ function draw_lens(lens_x,lens_y)
 	circfill(lens_x+10,lens_y-10,2,14)
 end
 
-function _update()
-	t+=1
-	y_speed += g
-    lens_x += x_speed
-    lens_y += y_speed
+-- function _update()
+-- 	t+=1
+-- end
 
-	if lens_y + lens_r > 127 then
-        lens_y = 127 - lens_r
-        y_speed = -y_speed * b
-        x_speed *= damping
-        y_speed *= damping
-	end
-    -- if lens_y - lens_r < 0 then
-    --     lens_y = lens_r
-    --     y_speed = -y_speed * b
-    --     x_speed *= damping
-    --     y_speed *= damping
-	-- end
-    if lens_x - lens_r < 0 then
-        lens_x = lens_r
-        x_speed = -x_speed * b
-        x_speed *= damping
-        y_speed *= damping
-	end
-    if lens_x + lens_r > 127 then
-        lens_x = 127 - lens_r
-        x_speed = -x_speed * b
-        x_speed *= damping
-        y_speed *= damping
-	end
-
-    x_speed *= damping
-    y_speed *= damping
-
-    if abs(x_speed) < 0.01 then x_speed = 0 end
-    if abs(y_speed) < 0.01 then y_speed = 0 end
-end
-
-function _draw()
-	cls()
-	spr(0,0,0,16,16)
-
-	draw_lens(lens_x,lens_y)
-end
+-- function _draw()
+-- 	cls()
+-- 	spr(0,0,0,16,16)
+-- 	update_lens()
+-- 	draw_lens(lens_x,lens_y)
+--     print(t,7)
+-- end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

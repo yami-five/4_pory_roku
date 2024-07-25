@@ -7,8 +7,10 @@ __lua__
 #include seasons.p8
 #include rasterizer.p8
 #include fractals.p8
+#include lens.p8
 
-t,delays,melted,mp,p_elapsed,rings,bees=0,{},0,0,0,0,{}
+-- t,delays,melted,mp,p_elapsed,rings,bees=0,{},0,0,0,0,{}
+t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99
 function _init()
 	music(0)
 	load_font()
@@ -17,11 +19,11 @@ function _init()
 	load_gfx(logo,32768)
 	gen_delays()
 	reload(0xc000,0x0000,0x2000,"intro_gfx.p8") 
-	reload(0xe000,0x0000,0x2000,"background_gfx.p8") 
+	reload(0xe000,0x0000,0x2000,"background_gfx.p8")
 end
 
 function _update()
-	t=t+1
+	t+=1
 	local elapsed=flr(stat(56)/12)%8
 	if(elapsed<p_elapsed)then 
 		mp+=1 
@@ -150,11 +152,16 @@ function _update()
 			t=0 
 			memset(0x6000,0,0x2000)
 			pal()
+			init_lens()
 		end
 		if(mp==120)then
 			t=0
 			memset(0x6000,0,0x2000)
 		end
+		if(mp==121)then
+			t=0
+		end
+		if(mp==131)then t=0 end
 		-- if(mp==124)then
 		-- 	t=0
 		-- end
