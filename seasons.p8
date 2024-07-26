@@ -198,12 +198,24 @@ end
 function winter()
     if(mp<192)then
         memcpy(0x6000,0x8000,0x2000)
-        for i=0,127 do
-            for j=0,127 do
-                c=rnd(20)
-                if(c<=4)then pset(i,j,c+8) end
+        if(#snow==0 or t%3==0)then
+            snow=""
+            for i=0,4096 do
+                    snow=snow..flr(rnd(40))..","
             end
         end
+        local s=split(snow)
+        for i=0,63 do
+            for j=1,64 do
+                local c=s[i*64+j]
+                if(c<=3)then
+                    pset(i,j-1,c+8) 
+                    pset(i+64,j-1,c+8) 
+                    pset(i+64,j+63,c+8) 
+                    pset(i,j+63,c+8) 
+                end
+            end
+        end 
     end
 end
 
@@ -212,8 +224,8 @@ end
 --    t+=1 
 -- end
 
+-- snow =""
 -- function _draw()
 --     cls()
---     draw_plasma()   
---     print(t,0)
+    
 -- end

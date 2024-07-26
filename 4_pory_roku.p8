@@ -9,7 +9,7 @@ __lua__
 #include fractals.p8
 #include lens.p8
 
-t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99
+t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping,snow=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99,""
 function _init()
 	music(0)
 	load_font()
