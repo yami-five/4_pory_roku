@@ -196,8 +196,13 @@ function inverted_leaves()
 end
 
 function winter()
-    if(mp<192)then
+    if(mp<176)then
         memcpy(0x6000,0x8000,0x2000)
+        if(mp>174)then
+            draw_thunder(11,200)
+        else
+            draw_thunder(4,100)
+        end
         if(#snow==0 or t%3==0)then
             snow=""
             for i=0,4096 do
@@ -216,16 +221,54 @@ function winter()
                 end
             end
         end 
+    elseif(mp<193)then
+        draw_fire()
     end
 end
-
--- t=0
--- function _update()
---    t+=1 
--- end
-
--- snow =""
--- function _draw()
---     cls()
-    
--- end
+function draw_thunder(c,l)
+    if(#thunder>l)then thunder='' end
+    if(#thunder==0)then
+        t_x=flr(rnd(64))+32
+        thunder=thunder..tostr(t_x)..","
+    else
+        for i=1,5 do
+            if(flr(rnd(2))==0)then
+                t_x+=1
+            else
+                t_x-=1
+            end
+            thunder=thunder..tostr(t_x).."," 
+        end
+    end
+    local pt=split(thunder)
+    for i=1,#pt-2 do
+        pset(pt[i+1],i,c)
+    end
+end
+function draw_fire()
+	local w,h,hh=64,64,4096
+	for x=1,w do
+		fire[h*(h-1)+x]=rnd(128)%16
+	end
+	for y=0,h-1 do
+		for x=1,w do
+			local yh1=(y*h+1)
+			local yhmodhh,hmodw=(yh1+h)%hh,x%w
+			fire[yh1+x]=
+				((fire[yhmodhh+(x+w)%w]
+				+fire[((yh1+h*2)%hh)+hmodw]
+				+fire[yhmodhh+(x+1)%w]
+				+fire[((yh1+h*3)%hh)+hmodw])/4.2)%8
+		end
+	end
+	for y=1,h do
+		for x=1,w*2,2 do
+		local yhx=y*h+x
+			pset(x,y,fire[yhx])
+			pset(x+1,y,fire[yhx])
+			if(y%4==0)then
+				pset(x,96-(y/2),fire[yhx])
+			end
+		end
+	end
+end

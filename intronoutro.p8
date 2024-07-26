@@ -61,3 +61,10 @@ function intro()
 		circfill(36,72,t*2,0 | 0x1800)
 	end
 end
+
+function outro()
+	draw_chicken()
+	for i=1,#text_outro do
+		print(text_outro[i],128-t*2+8*(i-1),sin((t*2+8*(i-1))*0.025)*4+64,7)
+	end
+end

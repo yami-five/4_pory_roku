@@ -27,6 +27,7 @@ end
 
 
 function draw_fire()
+	local w,h=64,64
 	for x=1,w do
 		fire[h*(h-1)+x]=rnd(128)%16
 	end

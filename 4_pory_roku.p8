@@ -3,13 +3,13 @@ version 42
 __lua__
 #include utils.p8
 #include px9_dec.p8
-#include intro.p8
+#include intronoutro.p8
 #include seasons.p8
 #include rasterizer.p8
 #include fractals.p8
 #include lens.p8
 
-t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping,snow=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99,""
+t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping,snow,thunder,t_x,fire=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99,"","",0,{}
 function _init()
 	music(0)
 	load_font()
@@ -129,6 +129,18 @@ function _update()
 			t=0
 			change_palette(split("0,129,129,1,140,129,1,129,5,140,140,7,1,140,12,129"))
 		end
+		if(mp==176)then
+			t=0
+			change_palette(split("0,8,137,9,10,135,7,7,7,7,7,7,7,7,7,7"))
+			for i=1,4096 do
+				fire[i]=0
+			end
+		end
+		if(mp==191)then
+			t=0
+			pal()
+			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G")
+		end 
 	end
 	p_elapsed=elapsed
 	if(mp==23 and t==64)then
@@ -149,20 +161,22 @@ function _draw()
 		summer()
 	elseif(mp<112)then
 		bridge2()
-	elseif(mp<144)then
+	elseif(mp<143)then
 		autumn()
 	elseif(mp<160)then
 		draw_cube_anim()
-	elseif(mp<192)then
+	elseif(mp<191)then
 		winter()
+	elseif(mp<206)then
+		outro()
+	else
+		cls()
 	end
 	--print(@0xc000,0,50,7)
 	--spr(0,0,0,16,16)
 	-- print(mp,0,70,1)
 	-- print(t,0,80,1)
 end
---placeholders
-__gfx__
 __sfx__
 410c00000e55010550115501154011530115200e5500e55010550105201055011550135501155010550105200e55010550115501154011530115200e5500e5500c5500c5200c5500e550105500e5500c5500c520
 410c00000e55010550115501154011530115200e5500e550105501052010550115501355011550105501052011550115200e5500e520105500e5500c5500c5200e5500e5200e5500e5200c5500c5201055010520
