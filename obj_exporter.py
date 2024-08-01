@@ -2,7 +2,7 @@ vertices=[]
 faces=[]
 vt=[]
 uv=[]
-with open("assets/chicken.obj") as f:
+with open("assets/logo.obj") as f:
     while line:=f.readline():
         if line[0:2]=='v ':
             vertex=line.split()

@@ -54,10 +54,10 @@ end
 -- 	end
 -- end
 
--- function fade_out(factor,color)
--- 	fillp(fade[flr(t*factor)])
--- 	rectfill(0,0,127,127,color)
--- end
+function fade_out()
+	fillp(fade[flr(t*0.1)])
+	rectfill(0,0,127,127,0)
+end
 
 function fade_in()
 	fillp(fade[7-ceil(t*0.1)])
