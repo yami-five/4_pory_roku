@@ -3,3 +3,7 @@ backup/*
 4_pory_roku/*
 *.txt
 *.bin/*
+*.js
+*.zip
+*.html
+*.py

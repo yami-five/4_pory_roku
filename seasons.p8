@@ -48,13 +48,6 @@ function draw_plasma()
 	end
 end
 
--- function hex(value)
--- 	result=tostr(value,true)
--- 	result=sub(result,6,6)
---     -- printh(result,"loggg.txt")
--- 	return result
--- end
-
 function scroller()
     for i=1,128,1 do
         memcpy(0x0000+(0x40*(i-1+1)),img1+t+(0x40*(i-1+1)),0x40-t)
