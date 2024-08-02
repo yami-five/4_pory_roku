@@ -139,7 +139,7 @@ function _update()
 		if(mp==191)then
 			t=0
 			pal()
-			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G")
+			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G, ,i,T,','S, ,N,O,T, ,T,H,E, ,E,N,D")
 		end 
 	end
 	p_elapsed=elapsed
@@ -167,7 +167,7 @@ function _draw()
 		draw_cube_anim()
 	elseif(mp<191)then
 		winter()
-	elseif(mp<206)then
+	elseif(mp<207 and t<250)then
 		outro()
 	else
 		load("credits.p8")

@@ -39,7 +39,7 @@ function update_lens()
 		if lens_y+lens_r>127 then
 			lens_y=127-lens_r
 			y_speed=-y_speed*b
-		end
+		end 
 		if lens_x-lens_r<0 then
 			lens_x=lens_r
 			x_speed=-x_speed*b
