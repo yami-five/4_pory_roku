@@ -330,7 +330,7 @@ function draw_chicken(p)
         z=z+5;
         x=x*96/z+64;
         y=y*96/z+64;
-        vt[j],vt[j+1],vt[j+1]=flr(x),flr(y),flr(z);
+        vt[j],vt[j+1],vt[j+2]=flr(x),flr(y),flr(z);
     end
     draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{chicken_tex},true,16)
 end

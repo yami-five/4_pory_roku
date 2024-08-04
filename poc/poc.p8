@@ -330,56 +330,43 @@ function draw_chicken(p)
         z=z+5;
         x=x*96/z+64;
         y=y*96/z+64;
-        vt[j],vt[j+1],vt[j+1]=flr(x),flr(y),flr(z);
+        vt[j],vt[j+1],vt[j+2]=flr(x),flr(y),flr(z);
     end
-    local order,index={},1
-    for i=1,faces,3 do
-        local x,y,z=0,0,0
-        for j=1,3,1 do
-            x+=vm[(f[i]*3+j)]
-            y+=vm[(f[i]*3+j)+1]
-            z+=vm[(f[i]*3+j)+2]
-        end
-        x/=3
-        y/=3
-        z/=3
-        index+=1
-        add(order,index)
-        add(order,flr(sqrt((0-x)*(0-x)+(0-y)*(0-y)+(-10-z)*(-10-z))*1000))
-    end
-    order=sort(order)
+    -- local order,index={},1
+    -- for i=1,faces,3 do
+    --     local x,y,z=0,0,0
+    --     for j=1,3,1 do
+    --         x+=vm[(f[i]*3+j)]
+    --         y+=vm[(f[i]*3+j)+1]
+    --         z+=vm[(f[i]*3+j)+2]
+    --     end
+    --     x/=3
+    --     y/=3
+    --     z/=3
+    --     index+=1
+    --     add(order,index)
+    --     add(order,flr(sqrt((0-x)*(0-x)+(0-y)*(0-y)+(-10-z)*(-10-z))*1000))
+    -- end
+    -- order=sort(order)
     draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{chicken_tex},true,16)
-    for i=1,faces/6,2 do
-        local v_r,vm_r,tc_r,uv_r={},{},{},{}
-        -- printh(order[i],"loggg.txt")
-        -- printh(f[order[i]*3-2].." "..f[order[i]*3-1].." "..f[order[i]*3],"loggg.txt")
-        -- local v1,v2,v3=f[order[i]*3-2],f[order[i]*3-1],f[order[i]*3]
-        -- add(v_r,vt[v1*3-2])
-        for j=2,0,-1 do
-            local vn=f[order[i]*3-j]
-            add(v_r[vt[vn]*3-2])
-            add(v_r[vt[vn]*3-1])
-            add(v_r[vt[vn]*3])
-            add(vm_r[vm[vn]*3-2])
-            add(vm_r[vm[vn]*3-1])
-            add(vm_r[vm[vn]*3])
-            add(tc_r[tc[vn]*3-2])
-            add(tc_r[tc[vn]*3-1])
-            add(tc_r[tc[vn]*3])
-            add(uv_r[uv[vn]*3-2])
-            add(uv_r[uv[vn]*3-1])
-            add(uv_r[uv[vn]*3])
-            
-        end
-        -- for j=1,faces,3 do
-
-        -- end
-        -- for j=1+vertices*3*(order[i]-1),vertices*3*order[i] do
-        --     add(v_r,vt[j])
-        --     add(vm_r,vm[j])
-        -- end
-	    -- draw_model(p,qt,3,v_r,vm_r,1,{1,2,3},tc_r,uv_r,{tex},true,16)
-    end
+    -- for i=1,faces/6,2 do
+    --     index=0
+    --     local v_r,vm_r,tc_r,uv_r={},{},{},{}
+    --     for j=2,0,-1 do
+    --         local vn=f[order[i]*3-j]
+    --         add(v_r,vt[vn*3-2])
+    --         add(v_r,vt[vn*3-1])
+    --         add(v_r,vt[vn*3])
+    --         add(vm_r,vm[vn*3-2])
+    --         add(vm_r,vm[vn*3-1])
+    --         add(vm_r,vm[vn*3])
+    --         add(uv_r,index)
+    --         add(tc_r,tc[uv[order[i]*3-j]+1])
+    --         add(tc_r,tc[uv[order[i]*3-j]+2])
+    --         index+=1
+    --     end
+	--     draw_model(p,qt,3,v_r,vm_r,1,{0,1,2},tc_r,uv_r,{chicken_tex},true,16)
+    -- end
 end
 
 function sort(seq)
