@@ -12,11 +12,8 @@ function spring()
             leaves()
         end
     elseif(mp<44)then
-        if(t>200 and rings>=0)then rings-=1 
-        elseif(rings<30 and t>10)then rings+=1 end
-        if(rings>=30 or t>200)then cls(flr(t*0.5)%7+8)
-        else cls()
-        end
+        if(t>200 and rings>=0)then rings-=2 
+        elseif(rings<45 and t>10)then rings+=1 end
         for i=rings,1,-1 do
             local sx = cos(7+t*0.01)
             local sy = sin(7+t*0.01)*cos(7+t*0.01)
@@ -24,9 +21,9 @@ function spring()
             circfill(64+sx*i,64+sy*i,200/i,flr(t*0.33+i)%7+8 | 0x1800)
         end
     elseif(mp>=44) then draw_plasma()
-        if(mp<46)then 
-            circfill(64,64,t*3,0 | 0x1800) 
-        end
+        -- if(mp<46)then 
+        --     circfill(64,64,t*3,0 | 0x1800) 
+        -- end
     end
 end
 

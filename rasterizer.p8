@@ -274,7 +274,7 @@ function draw_cube_anim(p)
         y=y*96/z+64;
         vt[j],vt[j+1],vt[j+2]=flr(x),flr(y),flr(z);
     end
-    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,false,32)
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,true,32)
 end
 
 function v3_len(vec)
@@ -312,7 +312,7 @@ end
 --     draw_chicken_sorted()
 -- end
 
-function draw_chicken_sorted(p)
+function draw_chicken(p)
 	local qt,vertices,faces,vt,vm,order=t*0.01,split("5,20,27,14,21,21"),split("4,28,36,20,36,36"),{},{},""
 	local v={split("-0.82,1.89,0.0,-1.18,1.89,0.0,-0.81,2.11,0.0,-0.74,1.89,0.14,-0.74,1.89,-0.14")
             ,split("-0.38,2.73,0.0,-0.72,2.44,0.0,-0.04,2.82,0.0,0.35,2.57,0.0,-0.42,2.47,0.42,-0.09,2.54,0.51,0.24,2.57,0.29,0.46,1.76,0.54,-0.48,1.86,0.54,0.04,1.84,0.68,0.52,2.08,0.0,-0.81,2.11,0.0,-0.74,1.89,0.14,-0.42,2.47,-0.42,-0.09,2.54,-0.51,0.24,2.57,-0.29,0.46,1.76,-0.54,-0.48,1.86,-0.54,0.04,1.84,-0.68,-0.74,1.89,-0.14")
