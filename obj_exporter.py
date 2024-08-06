@@ -20,21 +20,21 @@ with open("assets/chicken6.obj") as f:
         elif line[0:2]=='vt':
             vt.append(round(float(line.split()[1]),2))
             vt.append(round(float(line.split()[2]),2))
-text=""
-for x in vertices:
-    text+=str(x)+','
-print(text[:-1])
-print(len(vertices)//3)
-text=""
-for x in faces:
-    text+=str(x)+','
-print(text[:-1])
-print(len(faces)//3)
+# text=""
+# for x in vertices:
+#     text+=str(x)+','
+# print(text[:-1])
+# print(len(vertices)//3)
+# text=""
+# for x in faces:
+#     text+=str(x)+','
+# print(text[:-1])
+# print(len(faces)//3)
 text=""
 for x in vt:
     text+=str(x)+','
 print(text[:-1])
-text=""
-for x in uv:
-    text+=str(x)+','
-print(text[:-1])
+# text=""
+# for x in uv:
+#     text+=str(x)+','
+# print(text[:-1])

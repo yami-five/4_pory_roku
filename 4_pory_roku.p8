@@ -139,7 +139,8 @@ function _update()
 		if(mp==191)then
 			t=0
 			pal()
-			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G, ,i,T,','S, ,N,O,T, ,T,H,E, ,E,N,D")
+			change_palette(split("0,1,8,5,9,6,6,7,8,9,10,134,12,13,130,15"))
+			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G, ,i,T,',S, ,N,O,T, ,T,H,E, ,E,N,D, ,Y,E,T")
 		end 
 	end
 	p_elapsed=elapsed

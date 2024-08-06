@@ -135,8 +135,8 @@ function autumn()
     if(mp<118)then
         memcpy(0x6000,0x8000,0x2000)
         inverted_leaves()
-    elseif(mp<119)then
-        spr(0,0,-128+t*4,16,16)
+    elseif(mp<120)then
+        spr(0,0,-128+flr(t*2.8),16,16)
     elseif(mp<132)then
         spr(0,0,0,16,16)
         if(mp>=122)then
