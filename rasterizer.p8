@@ -42,10 +42,11 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture
         uv_y=flr(uv_y*tex_size+0.5)
         local texture_color1 = texture[max(0, min(tex_size*tex_size, flr(uv_y *tex_size + uv_x+0.5)))]
         local color="0x11"
-        if(l_int>0.7)then color="0x"..texture_color1..texture_color1
-        elseif(l_int<=0.7 and l_int>0.3)then color="0x1"..texture_color1
+        if(l_int>0.97)then color="0xa"..texture_color1
+        elseif(l_int<=0.97 and l_int>0.5)then color="0x"..texture_color1..texture_color1
+        elseif(l_int<=0.5 and l_int>0.3)then color="0x1"..texture_color1
         end
-        memset(0x6000 + y * 64 + x, color, 2)
+        memset(0x6000 + y * 0x40 + x, color, 2)
     end
 end
     
@@ -309,15 +310,15 @@ function mirror()
     end
 end
 
--- t=0
--- function _update()
---     t+=1
--- end
+t=0
+function _update()
+    t+=1
+end
 
--- function _draw()
---     cls()
---     draw_chicken()
--- end
+function _draw()
+    cls()
+    draw_chicken()
+end
 
 function draw_chicken(p)
 	local qt,vertices,faces,vt,vm,order=t*0.01,split("5,20,27,14,21,21"),split("4,28,36,20,36,36"),{},{},""
