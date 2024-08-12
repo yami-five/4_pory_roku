@@ -20,6 +20,18 @@ function zoom_rotator_texture()
     end
     return texture
 end
+
+function texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,fac)
+    local Ba,Bb=((p1[2]-p2[2])*(x*2+fac-p2[1])+(p2[1]-p1[1])*(y-p2[2]))*inv,((p2[2]-p0[2])*(x*2+fac-p2[1])+(p0[1]-p2[1])*(y-p2[2]))*inv
+    local Bc=1-Ba-Bb
+    local uv_x,uv_y=Ba*uv0[1]+Bb*uv1[1]+Bc*uv2[1],Ba*uv0[2]+Bb*uv1[2]+Bc*uv2[2]
+    uv_x = max(0, min(1, uv_x))
+    uv_x=flr(uv_x*tex_size+0.5)+1
+    uv_y = max(0, min(1, uv_y))
+    uv_y=flr(uv_y*tex_size+0.5)
+    return texture[max(0, min(tex_size*tex_size, flr(uv_y *tex_size + uv_x+0.5)))]
+end
+
 function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture)
     if (y<0 or y>127) return
     local q,n
@@ -33,18 +45,15 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture
     if (x1>123) x1=123
     x0,x1=flr(x0/2+0.5),flr(x1/2+0.5)
     for x = x0, x1, 1 do
-        Ba,Bb=((p1[2]-p2[2])*(x*2-p2[1])+(p2[1]-p1[1])*(y-p2[2]))*inv,((p2[2]-p0[2])*(x*2-p2[1])+(p0[1]-p2[1])*(y-p2[2]))*inv
-        Bc=1-Ba-Bb
-        uv_x,uv_y=Ba*uv0[1]+Bb*uv1[1]+Bc*uv2[1],Ba*uv0[2]+Bb*uv1[2]+Bc*uv2[2]
-        uv_x = max(0, min(1, uv_x))
-        uv_x=flr(uv_x*tex_size+0.5)+1
-        uv_y = max(0, min(1, uv_y))
-        uv_y=flr(uv_y*tex_size+0.5)
-        local texture_color1 = texture[max(0, min(tex_size*tex_size, flr(uv_y *tex_size + uv_x+0.5)))]
         local color="0x11"
-        if(l_int>0.97)then color="0xa"..texture_color1
-        elseif(l_int<=0.97 and l_int>0.5)then color="0x"..texture_color1..texture_color1
-        elseif(l_int<=0.5 and l_int>0.3)then color="0x1"..texture_color1
+        if(l_int>0.3)then
+            local texture_color1 = texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,0)
+            if(l_int>0.97)then color="0xa"..texture_color1
+            elseif(l_int<=0.97 and l_int>0.5)then
+                local texture_color2 = texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,-1)
+                color="0x"..texture_color1..texture_color2
+            elseif(l_int<=0.5)then color="0x1"..texture_color1
+            end
         end
         memset(0x6000 + y * 0x40 + x, color, 2)
     end
