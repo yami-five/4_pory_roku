@@ -310,17 +310,17 @@ function mirror()
     end
 end
 
-t=0
-function _update()
-    t+=1
-end
+-- t=0
+-- function _update()
+--     t+=1
+-- end
 
-function _draw()
-    cls()
-    spr(0,0,0,16,16)
-    draw_torus(0)
-    mirror()
-end
+-- function _draw()
+--     cls()
+--     spr(0,0,0,16,16)
+--     draw_torus(0)
+--     mirror()
+-- end
 
 function draw_chicken(p)
 	local qt,vertices,faces,vt,vm,order=t*0.01,split("5,20,27,14,21,21"),split("4,28,36,20,36,36"),{},{},""
