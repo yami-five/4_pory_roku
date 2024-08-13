@@ -4,37 +4,38 @@ __lua__
 tex='677765677656777677776566665677777777655ee55677777776555ee55567776665555ee55556665555555665555555665555677655556676eee6e77e6eee6776eee6eeee6eee676655556ee655556655555556655555556665555ee55556667776555ee55567777777655ee556777777776566665677776777656776567776'
 chicken_tex='5555555555555555555555555555555555555555555555545555335555555b5555554455555544545533b5555555545555555455555554445353b5555545595555555333333b554533b5555555555a55555535b55555b553555b55b5555454555553b5b5555b5b3bb5b55555555454555535b55b5bb5bb5b5bb5b55555554555553555555b55555555555555555545555355555555555b555555b555559544555355555555bbb55555bbb555554554553555555b55555bb5555553b5554454553b555b55555555b555b3533b554455553bbb555b5bbbb3555555b353b5445555b555b55555555bbb55bbb5b3b5444555b55555355b5555bb55535b5b33555555bb555555b5b555b5555b5353b3b55555355555d55555555555bbb53533554a55355555555555555555b33bb53bb544553555b555555555555b335b3535555b5535555b5bb55555555bb5b3533bb545553555b55555b5555555b553b5bbb545553355555555555555555b555bbb5555555222555555555555b555555555555555544455555555555555555555555555555555555555555b55555555555b5b5555555b4e55565d555555555555555555555555bb55d55d65d5555444445555555555552b5dd56ddd55555444444454555555552255655d6d5555554444545455555555524225ddd555555555555555555555555555555555555555555555555555'
 -- t=0
-function _init()
+-- function _init()
     -- pal(2,8,1)
     -- pal(3,5,1)
     -- pal(4,9,1)
     -- pal(5,6,1)
     -- pal(11,134,1)
     -- pal(14,130,1)
-    tex=zoom_rotator_texture()
-end
+    -- tex=zoom_rotator_texture()
+-- end
 function zoom_rotator_texture()
     local texture=""
-    for i=0,8192,1 do
+    for i=0,0x2000,1 do
         texture=texture..sub(tostr(@i,true),5,6)
     end
     return texture
 end
 
-function texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,fac)
-    local Ba,Bb=((p1[2]-p2[2])*(x*2+fac-p2[1])+(p2[1]-p1[1])*(y-p2[2]))*inv,((p2[2]-p0[2])*(x*2+fac-p2[1])+(p0[1]-p2[1])*(y-p2[2]))*inv
+function texturing(x,yp2y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,fac,tsts)
+    local Ba,Bb=((p1[2]-p2[2])*(x*2+fac-p2[1])+(p2[1]-p1[1])*yp2y)*inv,((p2[2]-p0[2])*(x*2+fac-p2[1])+(p0[1]-p2[1])*yp2y)*inv
     local Bc=1-Ba-Bb
     local uv_x,uv_y=Ba*uv0[1]+Bb*uv1[1]+Bc*uv2[1],Ba*uv0[2]+Bb*uv1[2]+Bc*uv2[2]
     uv_x = max(0, min(1, uv_x))
     uv_x=flr(uv_x*tex_size+0.5)+1
     uv_y = max(0, min(1, uv_y))
-    uv_y=flr(uv_y*tex_size+0.5)
-    return texture[max(0, min(tex_size*tex_size, flr(uv_y *tex_size + uv_x+0.5)))]
+    uv_y=flr(uv_y*tex_size+0.5)+1
+    return texture[max(0, min(tsts, flr(uv_y *tex_size + uv_x+0.5)))]
 end
 
-function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture)
+function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture,fast,tsts)
     if (y<0 or y>127) return
     local q,n
+    local yp2y=y-p2[2]
     n=(flr(y)%2+0.5)*0.5
     x0+=n;
     x1+=n;
@@ -47,11 +48,11 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture
     for x = x0, x1, 1 do
         local color="0x11"
         if(l_int>0.3)then
-            local texture_color1 = texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,0)
+            local texture_color1 = texturing(x,yp2y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,0,tsts)
             if(l_int>0.97)then color="0xa"..texture_color1
             elseif(l_int<=0.97 and l_int>0.5)then
-                local texture_color2 = texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,-1)
-                color="0x"..texture_color1..texture_color2
+                if (fast!=true) then color="0x"..texture_color1..texturing(x,y,inv,p0,p1,p2,uv0,uv1,uv2,tex_size,texture,-2,tsts) end
+                color="0x"..texture_color1..texture_color1
             elseif(l_int<=0.5)then color="0x1"..texture_color1
             end
         end
@@ -59,7 +60,7 @@ function rasterize(y, x0, x1, uv0, uv1, uv2, inv,p0,p1,p2,l_int,tex_size,texture
     end
 end
     
-function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size,texture)
+function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size,texture,fast,tsts)
     local x,xx,y,q,q2,uv;
     if (y0>y1) y=y0;y0=y1;y1=y;x=x0;x0=x1;x1=x;uv=uv0;uv0=uv1;uv1=uv;
     if (y0>y2) y=y0;y0=y2;y2=y;x=x0;x0=x2;x2=x;uv=uv0;uv0=uv2;uv2=uv;
@@ -75,7 +76,7 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size,texture)
         q,xd=0,1;
         if(x1<x0) xd=-1
         while y<=y1 do
-            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size,texture);
+            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size,texture,fast,tsts);
             y+=1;
             q+=dx01;
             q2+=dx02;
@@ -94,7 +95,7 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size,texture)
         q,x,xd=0,x1,1;
         if (x2<x1) xd=-1
         while y<=y2 and y<128 do
-            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size,texture);
+            rasterize(y,x,xx,uv0,uv1,uv2,inv,{x0,y0},{x1,y1},{x2,y2},l_int,tex_size,texture,fast,tsts);
             y+=1;
             q+=dx12;
             q2+=dx02;
@@ -110,10 +111,10 @@ function tri(x0,y0,x1,y1,x2,y2,uv0,uv1,uv2,l_int,tex_size,texture)
     end
 end
     
-function tric(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size,texture)
+function tric(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size,texture,fast,tsts)
     local e1x,e1y,e2x,e2y=c-a,d-b,e-a,f-b;
     if (e1x*e2y-e1y*e2x<0) return;
-    return tri(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size,texture);
+    return tri(a,b,c,d,e,f,uv0,uv1,uv2,l_int,tex_size,texture,fast,tsts);
 end
     
     
@@ -132,7 +133,7 @@ end
 --     return x+xT,y+yT,z+zT
 -- end
 
-function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,calc_light,tex_size)
+function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,calc_light,tex_size,fast,tsts)
     for i=1,3*faces,3 do
         local a,b,c,xab,yab,zab,xac,yac,zac,nv,l_dir,l_cos,l_int;
         a,b,c,l_int=f[i],f[i+1],f[i+2],0.9;
@@ -164,7 +165,7 @@ function draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,calc_light,tex_si
             vt[b*3+2],
             vt[c*3+1],
             vt[c*3+2],
-            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,tex_size,textures[tex_i])
+            {tc[uv[i]*2+1],tc[uv[i]*2+2]},{tc[uv[i+1]*2+1],tc[uv[i+1]*2+2]},{tc[uv[i+2]*2+1],tc[uv[i+2]*2+2]},l_int,tex_size,textures[tex_i],fast,tsts)
     end
 end
 function draw_cube(p)
@@ -187,7 +188,7 @@ function draw_cube(p)
         y=y*96/z+64;
         vt[j],vt[j+1],vt[j+1]=flr(x),flr(y),flr(z);
     end
-    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{tex},true,16)
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{tex},true,16,false,256)
 end
 
 function draw_torus(p)
@@ -233,7 +234,7 @@ function draw_torus(p)
             add(v_r,vt[j])
             add(vm_r,vm[j])
         end
-	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,{tex},true,16)
+	    draw_model(p,qt,vertices,v_r,vm_r,faces,f,tc,uv,{tex},true,16,false,256)
     end
 end
 
@@ -242,6 +243,7 @@ function zoom_rotator(p)
 	local v=split("-5.0,5.0,-0.0,5.0,5.0,-0.0,-5.0,-5.0,0.0,5.0,-5.0,0.0,5.0,5.0,-0.0,15.0,5.0,-0.0,5.0,-5.0,0.0,15.0,-5.0,0.0,-5.0,15.0,-0.0,5.0,15.0,-0.0,-5.0,5.0,-0.0,5.0,5.0,-0.0,5.0,15.0,-0.0,15.0,15.0,-0.0,5.0,5.0,-0.0,15.0,5.0,-0.0,-5.0,-5.0,0.0,5.0,-5.0,0.0,-5.0,-15.0,0.0,5.0,-15.0,0.0,5.0,-5.0,0.0,15.0,-5.0,0.0,5.0,-15.0,0.0,15.0,-15.0,0.0,-15.0,5.0,-0.0,-5.0,5.0,-0.0,-15.0,-5.0,0.0,-5.0,-5.0,0.0,-15.0,15.0,-0.0,-5.0,15.0,-0.0,-15.0,5.0,-0.0,-5.0,5.0,-0.0,-15.0,-5.0,0.0,-5.0,-5.0,0.0,-15.0,-15.0,0.0,-5.0,-15.0,0.0,-25.0,5.0,-0.0,-15.0,5.0,-0.0,-25.0,-5.0,0.0,-15.0,-5.0,0.0,-25.0,15.0,-0.0,-15.0,15.0,-0.0,-25.0,5.0,-0.0,-15.0,5.0,-0.0,-25.0,-5.0,0.0,-15.0,-5.0,0.0,-25.0,-15.0,0.0,-15.0,-15.0,0.0,-25.0,25.0,-0.0,-15.0,25.0,-0.0,-25.0,15.0,-0.0,-15.0,15.0,-0.0,-25.0,-15.0,0.0,-15.0,-15.0,0.0,-25.0,-25.0,0.0,-15.0,-25.0,0.0,15.0,5.0,-0.0,25.0,5.0,-0.0,15.0,-5.0,0.0,25.0,-5.0,0.0,15.0,15.0,-0.0,25.0,15.0,-0.0,15.0,5.0,-0.0,25.0,5.0,-0.0,15.0,-5.0,0.0,25.0,-5.0,0.0,15.0,-15.0,0.0,25.0,-15.0,0.0,15.0,25.0,-0.0,25.0,25.0,-0.0,15.0,15.0,-0.0,25.0,15.0,-0.0,15.0,-15.0,0.0,25.0,-15.0,0.0,15.0,-25.0,0.0,25.0,-25.0,0.0,-5.0,25.0,-0.0,5.0,25.0,-0.0,-5.0,15.0,-0.0,5.0,15.0,-0.0,5.0,25.0,-0.0,15.0,25.0,-0.0,5.0,15.0,-0.0,15.0,15.0,-0.0,-15.0,25.0,-0.0,-5.0,25.0,-0.0,-15.0,15.0,-0.0,-5.0,15.0,-0.0,-5.0,-15.0,0.0,5.0,-15.0,0.0,-5.0,-25.0,0.0,5.0,-25.0,0.0,5.0,-15.0,0.0,15.0,-15.0,0.0,5.0,-25.0,0.0,15.0,-25.0,0.0,-15.0,-15.0,0.0,-5.0,-15.0,0.0,-15.0,-25.0,0.0,-5.0,-25.0,0.0")
     local f,tc,uv=split("0,2,1,2,3,1"),split("1.0,0.0,0.0,1.0,0.0,0.0,1.0,1.0"),split("2,1,0,1,3,0")
     for i=1,planes,1 do
+        -- printh("-----"..i.."------","loggg.txt")
         local v_r=""
         for j=1+vertices*3*(i-1),vertices*3*i,3 do
             local x,y,z=v[j],v[j+1],v[j+2];
@@ -254,15 +256,20 @@ function zoom_rotator(p)
             x=x*96/z+64;
             y=y*96/z+64;
             v_r=v_r..flr(x+0.5)..","..flr(y+0.5)..","..flr(z+0.5)..","
+            -- printh(x.." "..y.." "..z,"loggg.txt")
         end
         v_r=split(sub(v_r,1,-2))
-	    draw_model(p,qt,vertices,v_r,v_r,faces,f,tc,uv,{tex},false,128)
+        local xc,yc=64-(v_r[1]+v_r[4]+v_r[7]+v_r[10])/4,64-(v_r[2]+v_r[5]+v_r[8]+v_r[11])/4
+        -- printh("dis="..flr(sqrt(xc*xc+yc*yc)),"loggg.txt")
+        if((xc*xc+yc*yc)<10000)then
+    	    draw_model(p,qt,vertices,v_r,v_r,faces,f,tc,uv,{tex},false,128,true,16384) 
+        end
     end
 end
 
 function draw_cube_anim(p)
-    local textures,qt,vertices,faces,vt,vm=draw_plasmas(),t*0.01,8,12,{},{}
-	local v=split("1.5,1.5,-1.5,1.5,-1.5,-1.5,1.5,1.5,1.5,1.5,-1.5,1.5,-1.5,1.5,-1.5,-1.5,-1.5,-1.5,-1.5,1.5,1.5,-1.5,-1.5,1.5")
+    local textures,qt,vertices,faces,vt,vm=draw_plasmas(),t*0.01,8,12,"",""
+	local v=split("1.3,1.3,-1.3,1.3,-1.3,-1.3,1.3,1.3,1.3,1.3,-1.3,1.3,-1.3,1.3,-1.3,-1.3,-1.3,-1.3,-1.3,1.3,1.3,-1.3,-1.3,1.3")
 	local f=split("0,2,4,3,7,2,7,5,6,5,7,1,1,3,0,5,1,4,2,6,4,7,6,2,5,4,6,7,3,1,3,2,0,1,0,4")
     local tc=split("1.0,0.0,0.0,1.0,0.0,0.0,1.0,1.0")
     local uv=split("2,1,0,2,1,0,1,3,2,0,2,3,2,1,0,1,3,2,1,3,0,1,3,0,3,0,2,2,1,3,1,3,0,3,0,2")
@@ -272,15 +279,14 @@ function draw_cube_anim(p)
         x,z=rotate(x,z,qt*1.5);
         -- x,y=inf(qt+p,x,y)
         -- y-=1
-        add(vm,x);
-        add(vm,y);
-        add(vm,z);
+        vm=vm..x..","..y..","..z..","
         z=z+5;
         x=x*96/z+64;
         y=y*96/z+64;
-        vt[j],vt[j+1],vt[j+2]=flr(x),flr(y),flr(z);
+        vt=vt..x..","..y..","..z..","
     end
-    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,true,32)
+    vm,vt=split(sub(vm,1,-2)),split(sub(vt,1,-2))
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,textures,true,32,false,1024)
 end
 
 function v3_len(vec)
@@ -309,17 +315,21 @@ function mirror()
     end
 end
 
-t=0
-function _update()
-    t+=1
-end
+-- t=0
+-- function _update()
+--     t+=1
+-- end
 
-function _draw()
-    cls()
-    -- spr(0,0,0,16,16)
-    zoom_rotator(0)
-    -- mirror()
-end
+-- function _draw()
+--     cls()
+--     -- bridge2()
+--     -- spr(0,0,0,16,16)
+--     -- zoom_rotator(0)
+--     draw_cube_anim()
+--     -- draw_chicken()
+--     -- mirror()
+--     print(stat(9))
+-- end
 
 function draw_chicken(p)
 	local qt,vertices,faces,vt,vm,order=t*0.01,split("5,20,27,14,21,21"),split("4,28,36,20,36,36"),{},{},""
@@ -375,7 +385,7 @@ function draw_chicken(p)
     end
     order=sort(split(sub(order,1,-2)))
     for i=1,#vertices*2,2 do
-        draw_model(p,qt,vertices[order[i]],vt[order[i]],vm[order[i]],faces[order[i]],f[order[i]],tc[order[i]],uv[order[i]],{chicken_tex},true,32)
+        draw_model(p,qt,vertices[order[i]],vt[order[i]],vm[order[i]],faces[order[i]],f[order[i]],tc[order[i]],uv[order[i]],{chicken_tex},true,32,false,1024)
     end
 end
 
