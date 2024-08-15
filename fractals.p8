@@ -51,6 +51,9 @@ function fractal2()
             n=julia(z1*s+x,z2*s)
             local color = n%16
             pset(i,j,color)
+            pset(i+1,j,color)
+            pset(i,j+1,color)
+            pset(i+1,j+1,color)
         end
     end
 end
