@@ -1,10 +1,23 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+function set_screen_pallete()
+	poke(0x5f5f,0x10)
+	for i=0,4 do
+		poke(0x5f7b+i,0xff)
+	end
+end
 
-function change_palette(palette)
+function reset_screen_palette()
+	poke(0x5f5f,0x00)
+	for i=0,15 do
+		poke(0x5f70+i,0x00)
+	end
+end
+
+function change_palette(palette,pal_n)
 	for i=1,16 do
-		pal(i-1,palette[i],1)
+		pal(i-1,palette[i],pal_n)
 	end
 end
 

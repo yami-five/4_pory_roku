@@ -44,7 +44,7 @@ function _update()
 				add(bees,rnd(128)-560)
 			end
 			t=0
-			change_palette(split("0,1,132,3,4,5,6,140,128,9,10,138,12,14,139,134"))
+			change_palette(split("0,1,132,3,4,5,6,140,128,9,10,138,12,14,139,134"),1)
 			px9_decomp(0,0,0xe600,sget,sset) 
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xeb00,sget,sset) 
@@ -78,13 +78,16 @@ function _update()
 			t=0
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xf500,sget,sset)
-			change_palette(split("0,1,2,3,4,2,139,11,139,9,10,11,12,13,14,141"))
+			set_screen_pallete()
+			change_palette(split("0,1,2,3,4,2,139,11,139,9,10,11,12,13,14,141"),1)
+			change_palette(split("0,129,132,131,130,132,3,139,3,137,9,139,140,2,13,133"),2)
 		end
 		if(mp==64)then
 			t=0
 			pal()
+			reset_screen_palette()
 			memcpy(0x0000,0xa000,0x2000)
-			change_palette(split("0,1,132,139,4,5,134,140,8,135,7,138,12,12,11,9"))
+			change_palette(split("0,1,132,139,4,5,134,140,8,135,7,138,12,12,11,9"),1)
 		end
 		if(mp==76)then
 			t=0
@@ -96,15 +99,18 @@ function _update()
 
 		if(mp==96)then
 			t=0
+			set_screen_pallete()
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xf500,sget,sset)
-			change_palette(split("0,1,10,3,4,2,139,11,139,9,136,11,12,135,137,140"))
+			change_palette(split("0,1,10,3,4,2,139,11,139,9,136,11,12,135,137,140"),1)
+			change_palette(split("0,129,9,131,132,132,3,139,3,137,132,139,140,10,4,1"),2)
 		end
 		if(mp==112)then
 			t=0
 			pal()
+			reset_screen_palette()
 			memcpy(0x0000,0xa000,0x2000)
-			change_palette(split("0,1,132,4,4,5,134,1,8,9,9,138,140,9,137,4"))
+			change_palette(split("0,1,132,4,4,5,134,1,8,9,9,138,140,9,137,4"),1)
 		end
 		if(mp==117)then
 			reload(0x0000,0x0000,0x2000,"rasterizer.p8")
@@ -112,12 +118,17 @@ function _update()
 		end 
 		if(mp==118) then 
 			t=0 
-			memset(0x6000,0,0x2000)
-			pal()
+			change_palette(split("0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"),2)
+			poke(0x5f5f,0x10)
+			palt(0,false)
+			-- memset(0x6000,0,0x2000) --black screen
 			init_lens()
 		end
 		if(mp==120)then
 			t=0
+			palt(0,true)
+			reset_screen_palette()
+			pal()
 			memset(0x6000,0,0x2000)
 		end
 		if(mp==121)then
@@ -127,11 +138,11 @@ function _update()
 		
 		if(mp==160)then
 			t=0
-			change_palette(split("0,129,129,1,140,129,1,129,5,140,140,7,1,140,12,129"))
+			change_palette(split("0,129,129,1,140,129,1,129,5,140,140,7,1,140,12,129"),1)
 		end
 		if(mp==176)then
 			t=0
-			change_palette(split("0,8,137,9,10,135,7,7,7,7,7,7,7,7,7,7"))
+			change_palette(split("0,8,137,9,10,135,7,7,7,7,7,7,7,7,7,7"),1)
 			for i=1,4096 do
 				fire[i]=0
 			end
@@ -139,7 +150,7 @@ function _update()
 		if(mp==191)then
 			t=0
 			pal()
-			change_palette(split("0,1,8,5,9,6,6,7,8,9,10,134,12,13,130,15"))
+			change_palette(split("0,1,8,5,9,6,6,7,8,9,10,134,12,13,130,15"),1)
 			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G, ,i,T,',S, ,N,O,T, ,T,H,E, ,E,N,D, ,Y,E,T")
 		end 
 	end

@@ -42,19 +42,33 @@ end
 function fractal2()
     x+=0.0005
     s*=0.9
-    local rs,re,is,ie = -1,1,-1,1
-    for i=1,127,2 do
+    -- local rs,re,is,ie = -1,1,-1,1
+    -- local rers,ieis=2,2
+    for i=33,97,2 do
         for j=1,127,2 do
-            local z1,z2=rs + (i*0.0078) * (re - rs),is + (j*0.0078) * (ie - is)
+            -- local z1,z2=rs + (i*0.0078) * (re - rs),is + (j*0.0078) * (ie - is)
+            local z1,z2=(i*0.0078)*2-1,(j*0.0078)*2-1
             n=julia(z1*s+x,z2*s)
             local color = n%16
+            -- color="0x"..color..color
+            -- poke(0x6000+j*0x40+i,color)
             pset(i,j,color)
-            pset(i+1,j,color)
-            pset(i,j+1,color)
-            pset(i+1,j+1,color)
+            -- pset(i+1,j,color)
+            -- pset(i,j+1,color)
+            -- pset(i+1,j+1,color)
         end
     end
 end
+
+
+-- t,cx,cy,s,x=0,0,0.75,2,0
+-- function _update()
+--     t+=1
+-- end
+-- function _draw()
+--     cls()
+--     fractal2()
+-- end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

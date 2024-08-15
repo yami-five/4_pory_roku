@@ -132,10 +132,15 @@ end
 
 function autumn()
     local texture
-    if(mp<118)then
+    if(mp<117)then
         memcpy(0x6000,0x8000,0x2000)
         inverted_leaves()
     elseif(mp<120)then
+        memcpy(0x6000,0x8000,0x2000)
+        local len,mem_sec=(2<<(flr(t*2.8)%8))-1,0x5f70+flr(t*2.8/8)
+        poke(mem_sec,len)
+        if(len<=3 and mem_sec!=0x5f70)then poke(mem_sec-1,0xff) end
+        if(len>0xff) then len=0x00 end
         spr(0,0,-128+flr(t*2.8),16,16)
     elseif(mp<132)then
         spr(0,0,0,16,16)
