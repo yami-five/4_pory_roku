@@ -9,7 +9,7 @@ __lua__
 #include fractals.p8
 #include lens.p8
 
-t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping,snow,thunder,t_x,fire=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99,"","",0,{}
+t,delays,melted,mp,p_elapsed,rings,bees,lens_size,lens_r,lens_zoom,lens,lens_x,lens_y,x_speed,y_speed,g,b,damping,snow,thunder,t_x,fire=0,{},0,0,0,0,{},40,20,8,{},64,-50,4,0,0.3,1,0.99,"","",0,""
 function _init()
 	music(0)
 	load_font()
@@ -78,7 +78,7 @@ function _update()
 			t=0
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xf500,sget,sset)
-			set_screen_pallete()
+			set_screen_pallete(5)
 			change_palette(split("0,1,2,3,4,2,139,11,139,9,10,11,12,13,14,141"),1)
 			change_palette(split("0,129,132,131,130,132,3,139,3,137,9,139,140,2,13,133"),2)
 		end
@@ -99,7 +99,7 @@ function _update()
 
 		if(mp==96)then
 			t=0
-			set_screen_pallete()
+			set_screen_pallete(5)
 			memcpy(0xa000,0x0000,0x2000)
 			px9_decomp(0,0,0xf500,sget,sset)
 			change_palette(split("0,1,10,3,4,2,139,11,139,9,136,11,12,135,137,140"),1)
@@ -142,13 +142,17 @@ function _update()
 		end
 		if(mp==176)then
 			t=0
+			set_screen_pallete(2)
 			change_palette(split("0,8,137,9,10,135,7,7,7,7,7,7,7,7,7,7"),1)
+			change_palette(split("0,136,4,137,9,10,6,6,6,6,6,6,6,6,6,6"),2)
 			for i=1,4096 do
-				fire[i]=0
+				fire=fire.."0,"
 			end
+			fire=split(sub(fire,1,-2))
 		end
 		if(mp==191)then
 			t=0
+			reset_screen_palette()
 			pal()
 			change_palette(split("0,1,8,5,9,6,6,7,8,9,10,134,12,13,130,15"),1)
 			text_outro=split("t,H,A,N,K,S, ,F,O,R, ,W,A,T,C,H,I,N,G, ,i,T,',S, ,N,O,T, ,T,H,E, ,E,N,D, ,Y,E,T")

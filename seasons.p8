@@ -173,7 +173,7 @@ function winter()
         if(#snow==0 or t%3==0)then
             snow=""
             for i=0,4096 do
-                    snow=snow..flr(rnd(40))..","
+                snow=snow..flr(rnd(40))..","
             end
         end
         local s=split(snow)
@@ -217,8 +217,8 @@ function draw_fire()
 	for x=1,w do
 		fire[h*(h-1)+x]=rnd(128)%16
 	end
-	for y=0,h-1 do
-		for x=1,w do
+	for y=1,h do
+		for x=0,w-1 do
 			local yh1=(y*h+1)
 			local yhmodhh,hmodw=(yh1+h)%hh,x%w
 			fire[yh1+x]=
@@ -228,17 +228,42 @@ function draw_fire()
 				+fire[((yh1+h*3)%hh)+hmodw])/4.2)%8
 		end
 	end
-	for y=1,h do
-		for x=1,w*2,2 do
-		local yhx=y*h+x
-			pset(x,y,fire[yhx])
-			pset(x+1,y,fire[yhx])
-			if(y%4==0)then
-				pset(x,96-(y/2),fire[yhx])
-			end
+	for y=0,63 do
+		for x=0,63 do
+		    local yhx=(y+1)*h+x+1
+            c=fire[yhx]
+			pset(x*2,y*2-12,c)
+			pset(x*2+1,y*2-12,c)
+			pset(x*2,y*2-11,fire[yhx])
+			pset(x*2+1,y*2-11,fire[yhx])
 		end
 	end
+    for i=0,20,1 do
+        memcpy(0x7fc0-64*i,0x6000+256*i+2048,0x40)
+    end
 end
+-- #include utils.p8
+-- t=0
+-- fire=""
+-- function _init()
+--     change_palette(split("0,8,137,9,10,135,7,7,7,7,7,7,7,7,7,7"),1)
+--     change_palette(split("0,136,4,137,9,10,6,6,6,6,6,6,6,6,6,6"),2)
+--     for i=1,4096 do
+--         fire=fire.."0,"
+--     end
+--     fire=split(sub(fire,1,-2))
+-- 	poke(0x5f5f,0x10)
+-- 	for i=3,4 do
+-- 		poke(0x5f7b+i,0xff)
+-- 	end
+-- end
+-- function _update()
+--     t+=1
+-- end
+-- function _draw()
+--     cls()
+--     draw_fire()
+-- end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000ee0000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -1,9 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-function set_screen_pallete()
+function set_screen_pallete(n)
 	poke(0x5f5f,0x10)
-	for i=0,4 do
+	for i=5-n,4 do
 		poke(0x5f7b+i,0xff)
 	end
 end

@@ -50,12 +50,7 @@ function fractal2()
             local z1,z2=(i*0.0078)*2-1,(j*0.0078)*2-1
             n=julia(z1*s+x,z2*s)
             local color = n%16
-            -- color="0x"..color..color
-            -- poke(0x6000+j*0x40+i,color)
             pset(i,j,color)
-            -- pset(i+1,j,color)
-            -- pset(i,j+1,color)
-            -- pset(i+1,j+1,color)
         end
     end
 end
