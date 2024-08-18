@@ -141,9 +141,9 @@ function autumn()
         poke(mem_sec,len)
         if(len<=3 and mem_sec!=0x5f70)then poke(mem_sec-1,0xff) end
         if(len>0xff) then len=0x00 end
-        spr(0,0,-128+flr(t*2.8),16,16)
+        spr(0,0,-128+flr(t*2.8),16,16,true,false)
     elseif(mp<132)then
-        spr(0,0,0,16,16)
+        spr(0,0,0,16,16,true,false)
         if(mp>=122)then
             update_lens()
 	        draw_lens(lens_x,lens_y)
