@@ -4,7 +4,7 @@ __lua__
 function spring()
     if(mp<26)then
         sky()
-        scroller()
+        if(t<64)then scroller() end
         spr(0,0,0,16,16)
     elseif(mp<34)then
         memcpy(0x6000,0x8000,0x2000)
