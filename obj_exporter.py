@@ -2,7 +2,7 @@ vertices=[]
 faces=[]
 vt=[]
 uv=[]
-with open("assets/zoom2.obj") as f:
+with open("assets/amiga_ball.obj") as f:
     while line:=f.readline():
         if line[0:2]=='v ':
             vertex=line.split()
@@ -23,18 +23,18 @@ with open("assets/zoom2.obj") as f:
 text=""
 for x in vertices:
     text+=str(x)+','
-print(text[:-1])
-print(len(vertices)//3)
+print("v=\""+str(text[:-1])+"\"")
+print("vertices="+str(len(vertices)//3))
 text=""
 for x in faces:
     text+=str(x)+','
-print(text[:-1])
-print(len(faces)//3)
+print("f=\""+str(text[:-1])+"\"")
+print("faces="+str(len(faces)//3))
 text=""
 for x in vt:
     text+=str(x)+','
-print(text[:-1])
+print("vt=\""+str(text[:-1])+"\"")
 text=""
 for x in uv:
     text+=str(x)+','
-print(text[:-1])
+print("uv=\""+str(text[:-1])+"\"")
