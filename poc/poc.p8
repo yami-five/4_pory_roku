@@ -392,7 +392,7 @@ function draw_chicken(p)
     end
 end
 
-ball_x,ball_y,x_speed,y_speed,ball_r,g,b=-1,-1,0.2,0.3,1,0.2,1
+ball_x,ball_y,x_speed,y_speed,ball_r,g,b=-1,-1,0.1,0.2,1,0.2,1
 function draw_amiga_ball(p)
     rectfill(0,0,127,127,5)
     -- circfill(ball_x+64,ball_y+64,12,1)
@@ -442,7 +442,7 @@ function draw_amiga_ball(p)
         vt=vt..x..","..y..","..z..","
     end
     vm,vt=split(sub(vm,1,-2)),split(sub(vt,1,-2))
-    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{amiga_ball_texture},false,8,false,64)
+    draw_model(p,qt,vertices,vt,vm,faces,f,tc,uv,{amiga_ball_texture},false,8,true,64)
 end
 
 function sort(seq)
