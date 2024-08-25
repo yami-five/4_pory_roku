@@ -2,7 +2,7 @@ vertices=[]
 faces=[]
 vt=[]
 uv=[]
-with open("assets/amiga_ball.obj") as f:
+with open("assets/amiga_ball2.obj") as f:
     while line:=f.readline():
         if line[0:2]=='v ':
             vertex=line.split()

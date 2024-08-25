@@ -21,9 +21,6 @@ function spring()
             circfill(64+sx*i,64+sy*i,200/i,flr(t*0.33+i)%7+8 | 0x1800)
         end
     elseif(mp>=44) then draw_plasma()
-        -- if(mp<46)then 
-        --     circfill(64,64,t*3,0 | 0x1800) 
-        -- end
     end
 end
 
@@ -242,28 +239,6 @@ function draw_fire()
         memcpy(0x7fc0-64*i,0x6000+256*i+2048,0x40)
     end
 end
--- #include utils.p8
--- t=0
--- fire=""
--- function _init()
---     change_palette(split("0,8,137,9,10,135,7,7,7,7,7,7,7,7,7,7"),1)
---     change_palette(split("0,136,4,137,9,10,6,6,6,6,6,6,6,6,6,6"),2)
---     for i=1,4096 do
---         fire=fire.."0,"
---     end
---     fire=split(sub(fire,1,-2))
--- 	poke(0x5f5f,0x10)
--- 	for i=3,4 do
--- 		poke(0x5f7b+i,0xff)
--- 	end
--- end
--- function _update()
---     t+=1
--- end
--- function _draw()
---     cls()
---     draw_fire()
--- end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000ee0000000000000000000000000000000000000000000000000000000000000000000000000000000000000

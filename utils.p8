@@ -61,17 +61,6 @@ function load_gfx(img, addr)
 	end
 end
 
--- function load_sprites(img)
--- 	for i=1,16384,2 do
--- 		poke((i-1)/2,"0x"..img[i]..img[i+1])
--- 	end
--- end
-
-function fade_out()
-	fillp(fade[flr(t*0.1)])
-	rectfill(0,0,127,127,0)
-end
-
 function fade_in()
 	fillp(fade[7-ceil(t*0.1)])
 	rectfill(0,0,127,127,0)
