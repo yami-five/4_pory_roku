@@ -410,18 +410,22 @@ function draw_amiga_ball(p)
     if ball_y+ball_r>2.5 then
         ball_y=2.5-ball_r
         y_speed=-y_speed*b
+        sfx(12,0,0,5)
     end 
     if ball_y-ball_r<-3 then
         ball_y=-3+ball_r
-        y_speed=-y_speed
+        y_speed=-y_speed*b
+        sfx(12,0,0,5)
     end
     if ball_x-ball_r<-2.5 then
         ball_x=-2.5+ball_r
         x_speed=-x_speed*b
+        sfx(12,0,0,5)
     end
     if ball_x+ball_r>2.5 then
         ball_x=2.5-ball_r
         x_speed=-x_speed*b
+        sfx(12,0,0,5)
     end
     for j=1,vertices*3,3 do
         local x,y,z=v[j],v[j+1],v[j+2];
